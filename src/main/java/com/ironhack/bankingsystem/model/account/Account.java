@@ -3,29 +3,33 @@ package com.ironhack.bankingsystem.model.account;
 import com.ironhack.bankingsystem.model.user.AccountHolder;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public abstract class Account {
 
-    private BigDecimal balance;
+    private Money balance;
     private AccountHolder primaryOwner;
     private AccountHolder secondaryOwner;
     private BigDecimal penaltyFee;
 
+    private LocalDate creationDate;
+
     public Account() {
+        this.creationDate = LocalDate.now();
     }
 
-    public Account(BigDecimal balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal penaltyFee) {
+    public Account(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal penaltyFee) {
         this.balance = balance;
         this.primaryOwner = primaryOwner;
         this.secondaryOwner = secondaryOwner;
         this.penaltyFee = penaltyFee;
     }
 
-    public BigDecimal getBalance() {
+    public Money getBalance() {
         return balance;
     }
 
-    public void setBalance(BigDecimal balance) {
+    public void setBalance(Money balance) {
         this.balance = balance;
     }
 

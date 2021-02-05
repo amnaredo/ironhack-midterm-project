@@ -28,7 +28,7 @@ public class CheckingAccount extends Account {
     }
 
 
-    public CheckingAccount(BigDecimal balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal penaltyFee, Status status, Integer secretKey, BigDecimal minimumBalance, BigDecimal monthlyMaintenanceFee) {
+    public CheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal penaltyFee, Status status, Integer secretKey, BigDecimal minimumBalance, BigDecimal monthlyMaintenanceFee) {
         super(balance, primaryOwner, secondaryOwner, penaltyFee);
         this.secretKey = secretKey;
         this.minimumBalance = minimumBalance;

@@ -15,7 +15,7 @@ public class StudentCheckingAccount extends CheckingAccount {
     public StudentCheckingAccount() {
     }
 
-    public StudentCheckingAccount(BigDecimal balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal penaltyFee, Status status, Integer secretKey) {
+    public StudentCheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal penaltyFee, Status status, Integer secretKey) {
         super(balance, primaryOwner, secondaryOwner, penaltyFee, status, secretKey, BigDecimal.ZERO, BigDecimal.ZERO);
     }
 }
