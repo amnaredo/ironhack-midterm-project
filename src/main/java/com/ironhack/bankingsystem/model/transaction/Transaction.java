@@ -19,7 +19,7 @@ public class Transaction {
     private Account toAccount;
 
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
+    //@Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime timestamp;
 
     private String authorName;

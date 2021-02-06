@@ -1,13 +1,15 @@
 package com.ironhack.bankingsystem.model.user;
 
 import com.ironhack.bankingsystem.model.account.Account;
+import com.ironhack.bankingsystem.model.user.enums.Type;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-public class AccountHolder {
+@PrimaryKeyJoinColumn(name = "id")
+public class AccountHolder extends User {
 //    AccountHolders should be able to access their own accounts and only their accounts when passing
 //    the correct credentials using Basic Auth.
 //    AccountHolders have:
@@ -17,11 +19,7 @@ public class AccountHolder {
 //    A primaryAddress (which should be a separate address class)
 //    An optional mailingAddress
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    private String name;
     private LocalDate dateOfBirth;
     @Embedded
     private Address primaryAddress;
@@ -33,27 +31,16 @@ public class AccountHolder {
     })
     private Address mailingAddress;
 
-    @OneToMany(mappedBy = "primaryOwner")
-    private List<Account> primaryAccountList;
-    @OneToMany(mappedBy = "secondaryOwner")
-    private List<Account> secondaryAccountList;
-
 
     public AccountHolder() {
+        this.setType(Type.ACCOUNT_HOLDER);
     }
 
     public AccountHolder(String name, LocalDate dateOfBirth, Address primaryAddress) {
-        this.name = name;
+        super(name);
         this.dateOfBirth = dateOfBirth;
         this.primaryAddress = primaryAddress;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        this.setType(Type.ACCOUNT_HOLDER);
     }
 
     public LocalDate getDateOfBirth() {

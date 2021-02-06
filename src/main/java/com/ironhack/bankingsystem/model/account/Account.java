@@ -3,7 +3,8 @@ package com.ironhack.bankingsystem.model.account;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.enums.Type;
 import com.ironhack.bankingsystem.model.transaction.Transaction;
-import com.ironhack.bankingsystem.model.user.AccountHolder;
+import com.ironhack.bankingsystem.model.user.User;
+import com.ironhack.bankingsystem.model.user.User;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -25,14 +26,18 @@ public abstract class Account {
     private Long id;
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "amount", column = @Column(name = "balance_amount")),
+            @AttributeOverride(name = "currency", column = @Column(name = "balance_currency"))
+    })
     private Money balance;
     @ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = CascadeType.ALL)
-    private AccountHolder primaryOwner;
+    private User primaryOwner;
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
-    private AccountHolder secondaryOwner;
+    private User secondaryOwner;
 
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
+    //@Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime creationDateTime;
     private LocalDateTime lastAccessDateTime;
 
@@ -50,22 +55,22 @@ public abstract class Account {
         this.balance = new Money(BigDecimal.ZERO);
     }
 
-    public Account(AccountHolder primaryOwner) {
+    public Account(User primaryOwner) {
         this();
         this.primaryOwner = primaryOwner;
     }
 
-    public Account(AccountHolder primaryOwner, AccountHolder secondaryOwner) {
+    public Account(User primaryOwner, User secondaryOwner) {
         this(primaryOwner);
         this.secondaryOwner = secondaryOwner;
     }
 
-    public Account(AccountHolder primaryOwner, Money balance) {
+    public Account(User primaryOwner, Money balance) {
         this(primaryOwner);
         this.balance = balance;
     }
 
-    public Account(AccountHolder primaryOwner, AccountHolder secondaryOwner, Money balance) {
+    public Account(User primaryOwner, User secondaryOwner, Money balance) {
         this(primaryOwner, secondaryOwner);
         this.balance = balance;
     }
@@ -80,31 +85,31 @@ public abstract class Account {
         this.balance = balance;
     }
 
-    public final AccountHolder getPrimaryOwner() {
+    public User getPrimaryOwner() {
         return primaryOwner;
     }
 
-    public final void setPrimaryOwner(AccountHolder primaryOwner) {
+    public void setPrimaryOwner(User primaryOwner) {
         this.primaryOwner = primaryOwner;
     }
 
-    public final AccountHolder getSecondaryOwner() {
+    public User getSecondaryOwner() {
         return secondaryOwner;
     }
 
-    public final void setSecondaryOwner(AccountHolder secondaryOwner) {
+    public void setSecondaryOwner(User secondaryOwner) {
         this.secondaryOwner = secondaryOwner;
     }
 
-    public final Money getPenaltyFee() {
+    public Money getPenaltyFee() {
         return PENALTY_FEE;
     }
 
-    public final LocalDateTime getCreationDateTime() {
+    public LocalDateTime getCreationDateTime() {
         return creationDateTime;
     }
 
-    public final void setCreationDateTime(LocalDateTime creationDateTime) {
+    public void setCreationDateTime(LocalDateTime creationDateTime) {
         this.creationDateTime = creationDateTime;
     }
 
