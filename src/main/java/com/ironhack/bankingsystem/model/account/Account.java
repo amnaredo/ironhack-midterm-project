@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public abstract class Account {
 
     // The penaltyFee for all accounts should be 40.
-    private final static Money PENALTY_FEE = new Money(BigDecimal.valueOf(40L));
+    private final static Money PENALTY_FEE = new Money(BigDecimal.valueOf(40.));
 
 
     private Money balance;
@@ -89,5 +89,9 @@ public abstract class Account {
 
     public void setLastAccessDateTime(LocalDateTime lastAccessDateTime) {
         this.lastAccessDateTime = lastAccessDateTime;
+    }
+
+    public boolean hasSecondaryOwner() {
+        return secondaryOwner != null;
     }
 }
