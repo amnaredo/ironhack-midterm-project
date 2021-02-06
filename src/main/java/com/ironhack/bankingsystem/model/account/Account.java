@@ -3,26 +3,28 @@ package com.ironhack.bankingsystem.model.account;
 import com.ironhack.bankingsystem.model.user.AccountHolder;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public abstract class Account {
+
+    // The penaltyFee for all accounts should be 40.
+    private final static Money PENALTY_FEE = new Money(BigDecimal.valueOf(40L));
 
     private Money balance;
     private AccountHolder primaryOwner;
     private AccountHolder secondaryOwner;
-    private BigDecimal penaltyFee;
 
-    private LocalDate creationDate;
+    private LocalDateTime creationDateTime;
+
 
     public Account() {
-        this.creationDate = LocalDate.now();
+        this.creationDateTime = LocalDateTime.now();
     }
 
     public Account(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal penaltyFee) {
         this.balance = balance;
         this.primaryOwner = primaryOwner;
         this.secondaryOwner = secondaryOwner;
-        this.penaltyFee = penaltyFee;
     }
 
     public Money getBalance() {
