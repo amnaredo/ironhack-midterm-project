@@ -1,10 +1,10 @@
 package com.ironhack.bankingsystem.model.account;
 
+import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.user.AccountHolder;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Min;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package com.ironhack.bankingsystem.model.account;
+package com.ironhack.bankingsystem.model;
 
 import java.math.RoundingMode;
 import java.math.BigDecimal;

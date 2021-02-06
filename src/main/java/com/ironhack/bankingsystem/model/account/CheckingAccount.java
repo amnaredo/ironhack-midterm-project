@@ -1,5 +1,6 @@
 package com.ironhack.bankingsystem.model.account;
 
+import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.enums.Status;
 import com.ironhack.bankingsystem.model.user.AccountHolder;
 

@@ -1,9 +1,9 @@
 package com.ironhack.bankingsystem.model.account;
 
+import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.user.AccountHolder;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public abstract class Account {
