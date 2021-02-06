@@ -1,7 +1,12 @@
 package com.ironhack.bankingsystem.model.user;
 
-import java.time.LocalDate;
+import com.ironhack.bankingsystem.model.account.Account;
 
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.List;
+
+@Entity
 public class AccountHolder {
 //    AccountHolders should be able to access their own accounts and only their accounts when passing
 //    the correct credentials using Basic Auth.
@@ -12,10 +17,27 @@ public class AccountHolder {
 //    A primaryAddress (which should be a separate address class)
 //    An optional mailingAddress
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
     private LocalDate dateOfBirth;
+    @Embedded
     private Address primaryAddress;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "street", column = @Column(name = "mail_street")),
+            @AttributeOverride(name = "city", column = @Column(name = "mail_city")),
+            @AttributeOverride(name = "postalCode", column = @Column(name = "mail_postal_code"))
+    })
     private Address mailingAddress;
+
+    @OneToMany(mappedBy = "primaryOwner")
+    private List<Account> primaryAccountList;
+    @OneToMany(mappedBy = "secondaryOwner")
+    private List<Account> secondaryAccountList;
+
 
     public AccountHolder() {
     }

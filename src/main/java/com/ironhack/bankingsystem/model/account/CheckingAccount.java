@@ -2,16 +2,21 @@ package com.ironhack.bankingsystem.model.account;
 
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.enums.Status;
+import com.ironhack.bankingsystem.model.account.enums.Type;
 import com.ironhack.bankingsystem.model.user.AccountHolder;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 
+@Entity
+@Table(name = "checking_account")
+@PrimaryKeyJoinColumn(name = "id")
 public class CheckingAccount extends Account {
 //    Checking Accounts should have:
 //
 //    A balance
 //    A secretKey
-//    A PrimaryOwner
+//    A PrimaryOwnerS
 //    An optional SecondaryOwner
 //    A minimumBalance
 //    A penaltyFee
@@ -23,13 +28,25 @@ public class CheckingAccount extends Account {
     private final static Money MINIMUM_BALANCE = new Money(BigDecimal.valueOf(250L));
     private final static Money MONTHLY_MAINTENANCE_FEE = new Money(BigDecimal.valueOf(12L));
 
+
     private Integer secretKey; // todo ?
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "currency", column = @Column(name = "min_balance_currency")),
+            @AttributeOverride(name = "amount", column = @Column(name = "min_balance_amount"))
+    })
     private Money minimumBalance;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "currency", column = @Column(name = "monthly_fee_currency")),
+            @AttributeOverride(name = "amount", column = @Column(name = "monthly_fee_amount"))
+    })
     private Money monthlyMaintenanceFee;
     private Status status;
 
 
     public CheckingAccount() {
+        this.setType(Type.CHECKING);
     }
 
     // Checking accounts should have a minimumBalance of 250 and a monthlyMaintenanceFee of 12
@@ -39,6 +56,7 @@ public class CheckingAccount extends Account {
         this.minimumBalance = MINIMUM_BALANCE;
         this.monthlyMaintenanceFee = MONTHLY_MAINTENANCE_FEE;
         this.status = Status.ACTIVE;
+        this.setType(Type.CHECKING);
     }
 
     public Integer getSecretKey() {

@@ -1,13 +1,18 @@
 package com.ironhack.bankingsystem.model.account;
 
 import com.ironhack.bankingsystem.model.Money;
+import com.ironhack.bankingsystem.model.account.enums.Type;
 import com.ironhack.bankingsystem.model.user.AccountHolder;
 
+import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "credit_card_account")
+@PrimaryKeyJoinColumn(name = "id")
 public class CreditCardAccount extends Account {
 
 //    CreditCard Accounts have:
@@ -41,6 +46,7 @@ public class CreditCardAccount extends Account {
 
 
     public CreditCardAccount() {
+        this.setType(Type.CREDIT_CARD);
         this.interestAddedDateTime = getCreationDateTime();
     }
 
@@ -48,6 +54,7 @@ public class CreditCardAccount extends Account {
         super(owner, balance);
         this.creditLimit = DEFAULT_CREDIT_LIMIT;  // CreditCard accounts have a default creditLimit of 100
         this.interestRate = DEFAULT_INTEREST_RATE;// CreditCards have a default interestRate of 0.2
+        this.setType(Type.CREDIT_CARD);
         this.interestAddedDateTime = getCreationDateTime();
     }
 
@@ -63,6 +70,7 @@ public class CreditCardAccount extends Account {
         super(owner, balance);
         this.creditLimit = new Money(BigDecimal.valueOf(creditLimit));
         this.interestRate = BigDecimal.valueOf(interestRate);
+        this.setType(Type.CREDIT_CARD);
         this.interestAddedDateTime = getCreationDateTime();
     }
 

@@ -1,13 +1,18 @@
 package com.ironhack.bankingsystem.model.account;
 
 import com.ironhack.bankingsystem.model.Money;
+import com.ironhack.bankingsystem.model.account.enums.Type;
 import com.ironhack.bankingsystem.model.user.AccountHolder;
 
+import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "savings_account")
+@PrimaryKeyJoinColumn(name = "id")
 public class SavingsAccount extends CheckingAccount {
 //    Checking Accounts should have:
 //
@@ -50,6 +55,7 @@ public class SavingsAccount extends CheckingAccount {
 
     public SavingsAccount() {
         this.interestAddedDateTime = getCreationDateTime();
+        this.setType(Type.SAVINGS);
     }
 
     public SavingsAccount(AccountHolder owner, Money balance, Integer secretKey) {
@@ -58,6 +64,7 @@ public class SavingsAccount extends CheckingAccount {
         setMinimumBalance(DEFAULT_MINIMUM_BALANCE);
         this.interestRate = DEFAULT_INTEREST_RATE;
         this.interestAddedDateTime = getCreationDateTime();
+        this.setType(Type.SAVINGS);
     }
 
     public SavingsAccount(AccountHolder owner, Money balance, Integer secretKey,
@@ -72,6 +79,7 @@ public class SavingsAccount extends CheckingAccount {
         setMinimumBalance(new Money(BigDecimal.valueOf(minimumBalance)));
         this.interestRate = BigDecimal.valueOf(interestRate);
         this.interestAddedDateTime = getCreationDateTime();
+        this.setType(Type.SAVINGS);
     }
 
 
