@@ -21,7 +21,7 @@ public abstract class Account {
         this.creationDateTime = LocalDateTime.now();
     }
 
-    public Account(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal penaltyFee) {
+    public Account(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
         this.balance = balance;
         this.primaryOwner = primaryOwner;
         this.secondaryOwner = secondaryOwner;
@@ -35,27 +35,31 @@ public abstract class Account {
         this.balance = balance;
     }
 
-    public AccountHolder getPrimaryOwner() {
+    public final AccountHolder getPrimaryOwner() {
         return primaryOwner;
     }
 
-    public void setPrimaryOwner(AccountHolder primaryOwner) {
+    public final void setPrimaryOwner(AccountHolder primaryOwner) {
         this.primaryOwner = primaryOwner;
     }
 
-    public AccountHolder getSecondaryOwner() {
+    public final AccountHolder getSecondaryOwner() {
         return secondaryOwner;
     }
 
-    public void setSecondaryOwner(AccountHolder secondaryOwner) {
+    public final void setSecondaryOwner(AccountHolder secondaryOwner) {
         this.secondaryOwner = secondaryOwner;
     }
 
-    public BigDecimal getPenaltyFee() {
-        return penaltyFee;
+    public final Money getPenaltyFee() {
+        return PENALTY_FEE;
     }
 
-    public void setPenaltyFee(BigDecimal penaltyFee) {
-        this.penaltyFee = penaltyFee;
+    public final LocalDateTime getCreationDateTime() {
+        return creationDateTime;
+    }
+
+    public final void setCreationDateTime(LocalDateTime creationDateTime) {
+        this.creationDateTime = creationDateTime;
     }
 }

@@ -27,8 +27,9 @@ public class SavingsAccount extends CheckingAccount {
     public SavingsAccount() {
     }
 
-    public SavingsAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal penaltyFee, Status status, Integer secretKey, BigDecimal minimumBalance, BigDecimal interestRate) {
-        super(balance, primaryOwner, secondaryOwner, penaltyFee, status, secretKey, minimumBalance, BigDecimal.ZERO);
+    public SavingsAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Integer secretKey, BigDecimal interestRate) {
+        super(balance, primaryOwner, secondaryOwner, secretKey);
+        setMonthlyMaintenanceFee(new Money(BigDecimal.ZERO));
         this.interestRate = interestRate;
     }
 

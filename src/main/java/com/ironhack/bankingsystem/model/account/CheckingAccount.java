@@ -18,22 +18,26 @@ public class CheckingAccount extends Account {
 //    A status (FROZEN, ACTIVE)
 //
 
+    // Checking accounts should have a minimumBalance of 250 and a monthlyMaintenanceFee of 12
+    private final static Money MINIMUM_BALANCE = new Money(BigDecimal.valueOf(250L));
+    private final static Money MONTHLY_MAINTENANCE_FEE = new Money(BigDecimal.valueOf(12L));
+
     private Integer secretKey; // todo ?
-    private BigDecimal minimumBalance;
-    private BigDecimal monthlyMaintenanceFee;
+    private Money minimumBalance;
+    private Money monthlyMaintenanceFee;
     private Status status;
 
 
     public CheckingAccount() {
     }
 
-
-    public CheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal penaltyFee, Status status, Integer secretKey, BigDecimal minimumBalance, BigDecimal monthlyMaintenanceFee) {
-        super(balance, primaryOwner, secondaryOwner, penaltyFee);
+    // Checking accounts should have a minimumBalance of 250 and a monthlyMaintenanceFee of 12
+    public CheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Integer secretKey) {
+        super(balance, primaryOwner, secondaryOwner);
         this.secretKey = secretKey;
-        this.minimumBalance = minimumBalance;
-        this.monthlyMaintenanceFee = monthlyMaintenanceFee;
-        this.status = status;
+        this.minimumBalance = MINIMUM_BALANCE;
+        this.monthlyMaintenanceFee = MONTHLY_MAINTENANCE_FEE;
+        this.status = Status.ACTIVE;
     }
 
     public Integer getSecretKey() {
@@ -44,19 +48,19 @@ public class CheckingAccount extends Account {
         this.secretKey = secretKey;
     }
 
-    public BigDecimal getMinimumBalance() {
+    public Money getMinimumBalance() {
         return minimumBalance;
     }
 
-    public void setMinimumBalance(BigDecimal minimumBalance) {
+    protected void setMinimumBalance(Money minimumBalance) {
         this.minimumBalance = minimumBalance;
     }
 
-    public BigDecimal getMonthlyMaintenanceFee() {
+    public Money getMonthlyMaintenanceFee() {
         return monthlyMaintenanceFee;
     }
 
-    public void setMonthlyMaintenanceFee(BigDecimal monthlyMaintenanceFee) {
+    protected void setMonthlyMaintenanceFee(Money monthlyMaintenanceFee) {
         this.monthlyMaintenanceFee = monthlyMaintenanceFee;
     }
 
