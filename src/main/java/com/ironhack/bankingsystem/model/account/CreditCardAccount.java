@@ -6,6 +6,7 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class CreditCardAccount extends Account {
 
@@ -17,6 +18,12 @@ public class CreditCardAccount extends Account {
 //    A creditLimit
 //    An interestRate
 //    A penaltyFee
+
+    // todo
+    //    Interest on credit cards is added to the balance monthly.
+    //    If you have a 12% interest rate (0.12) then 1% interest will be added to the account monthly.
+    //    When the balance of a credit card is accessed, check to determine if it has been 1 month or more since
+    //    the account was created or since interested was added, and if so, add the appropriate interest to the balance.
 
     private static final Double VALID_MIN_CREDIT_LIMIT = 100.0;
     private static final Double VALID_MAX_CREDIT_LIMIT = 100000.0;
@@ -30,14 +37,18 @@ public class CreditCardAccount extends Account {
     private Money creditLimit;
     private BigDecimal interestRate;
 
+    private LocalDateTime interestAddedDateTime;
+
 
     public CreditCardAccount() {
+        this.interestAddedDateTime = getCreationDateTime();
     }
 
     public CreditCardAccount(AccountHolder owner, Money balance) {
         super(owner, balance);
         this.creditLimit = DEFAULT_CREDIT_LIMIT;  // CreditCard accounts have a default creditLimit of 100
         this.interestRate = DEFAULT_INTEREST_RATE;// CreditCards have a default interestRate of 0.2
+        this.interestAddedDateTime = getCreationDateTime();
     }
 
     // CreditCards may be instantiated with a creditLimit higher than 100 but not higher than 100000
@@ -52,6 +63,7 @@ public class CreditCardAccount extends Account {
         super(owner, balance);
         this.creditLimit = new Money(BigDecimal.valueOf(creditLimit));
         this.interestRate = BigDecimal.valueOf(interestRate);
+        this.interestAddedDateTime = getCreationDateTime();
     }
 
 

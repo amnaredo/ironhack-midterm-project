@@ -6,6 +6,7 @@ import com.ironhack.bankingsystem.model.user.AccountHolder;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class SavingsAccount extends CheckingAccount {
 //    Checking Accounts should have:
@@ -24,6 +25,13 @@ public class SavingsAccount extends CheckingAccount {
 //    Do NOT have a monthlyMaintenanceFee
 //    Do have an interestRate
 
+    // todo
+    //    Interest on savings accounts is added to the account annually at the rate of specified interestRate per year.
+    //    That means that if I have 1000000 in a savings account with a 0.01 interest rate,
+    //    1% of 1 Million is added to my account after 1 year.
+    //    When a savings Account balance is accessed, you must determine if it has been 1 year or more since the either
+    //    the account was created or since interest was added to the account, and add the appropriate
+    //    interest to the balance if necessary.
 
 
     private static final Double VALID_MIN_INTEREST_RATE = 0.;
@@ -37,7 +45,11 @@ public class SavingsAccount extends CheckingAccount {
 
     private BigDecimal interestRate;
 
+    private LocalDateTime interestAddedDateTime;
+
+
     public SavingsAccount() {
+        this.interestAddedDateTime = getCreationDateTime();
     }
 
     public SavingsAccount(AccountHolder owner, Money balance, Integer secretKey) {
@@ -45,6 +57,7 @@ public class SavingsAccount extends CheckingAccount {
         setMonthlyMaintenanceFee(new Money(BigDecimal.ZERO));
         setMinimumBalance(DEFAULT_MINIMUM_BALANCE);
         this.interestRate = DEFAULT_INTEREST_RATE;
+        this.interestAddedDateTime = getCreationDateTime();
     }
 
     public SavingsAccount(AccountHolder owner, Money balance, Integer secretKey,
@@ -58,6 +71,7 @@ public class SavingsAccount extends CheckingAccount {
         setMonthlyMaintenanceFee(new Money(BigDecimal.ZERO));
         setMinimumBalance(new Money(BigDecimal.valueOf(minimumBalance)));
         this.interestRate = BigDecimal.valueOf(interestRate);
+        this.interestAddedDateTime = getCreationDateTime();
     }
 
 
