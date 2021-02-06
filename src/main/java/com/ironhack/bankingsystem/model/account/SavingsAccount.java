@@ -40,21 +40,21 @@ public class SavingsAccount extends CheckingAccount {
     public SavingsAccount() {
     }
 
-    public SavingsAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Integer secretKey) {
-        super(balance, primaryOwner, secondaryOwner, secretKey);
+    public SavingsAccount(AccountHolder owner, Money balance, Integer secretKey) {
+        super(owner, balance, secretKey);
         setMonthlyMaintenanceFee(new Money(BigDecimal.ZERO));
         setMinimumBalance(DEFAULT_MINIMUM_BALANCE);
         this.interestRate = DEFAULT_INTEREST_RATE;
     }
 
-    public SavingsAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Integer secretKey,
+    public SavingsAccount(AccountHolder owner, Money balance, Integer secretKey,
                           @DecimalMin(value = "0.0", message = "Interest rate must be non negative")
                           @DecimalMax(value = "0.5", message = "Interest rate must be lesser than 0.5")
                           Double interestRate,
                           @DecimalMin(value = "100", message = "Minimum balance must be greater than 100")
                           @DecimalMax(value = "1000", message = "Minimum balance must be lesser than 1000")
                           Double minimumBalance) {
-        super(balance, primaryOwner, secondaryOwner, secretKey);
+        super(owner, balance, secretKey);
         setMonthlyMaintenanceFee(new Money(BigDecimal.ZERO));
         setMinimumBalance(new Money(BigDecimal.valueOf(minimumBalance)));
         this.interestRate = BigDecimal.valueOf(interestRate);

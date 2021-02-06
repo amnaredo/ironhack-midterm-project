@@ -15,8 +15,8 @@ public class StudentCheckingAccount extends CheckingAccount {
     public StudentCheckingAccount() {
     }
 
-    public StudentCheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Integer secretKey) {
-        super(balance, primaryOwner, secondaryOwner, secretKey);
+    public StudentCheckingAccount(AccountHolder owner, Money balance, Integer secretKey) {
+        super(owner, balance, secretKey);
         setMonthlyMaintenanceFee(new Money(BigDecimal.ZERO));
         setMinimumBalance(new Money(BigDecimal.ZERO));
     }

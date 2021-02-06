@@ -32,8 +32,8 @@ public class CheckingAccount extends Account {
     }
 
     // Checking accounts should have a minimumBalance of 250 and a monthlyMaintenanceFee of 12
-    public CheckingAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner, Integer secretKey) {
-        super(balance, primaryOwner, secondaryOwner);
+    public CheckingAccount(AccountHolder owner, Money balance, Integer secretKey) {
+        super(owner, balance);
         this.secretKey = secretKey;
         this.minimumBalance = MINIMUM_BALANCE;
         this.monthlyMaintenanceFee = MONTHLY_MAINTENANCE_FEE;

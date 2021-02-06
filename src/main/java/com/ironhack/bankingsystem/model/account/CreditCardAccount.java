@@ -34,22 +34,22 @@ public class CreditCardAccount extends Account {
     public CreditCardAccount() {
     }
 
-    public CreditCardAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
-        super(balance, primaryOwner, secondaryOwner);
+    public CreditCardAccount(AccountHolder owner, Money balance) {
+        super(owner, balance);
         this.creditLimit = DEFAULT_CREDIT_LIMIT;  // CreditCard accounts have a default creditLimit of 100
         this.interestRate = DEFAULT_INTEREST_RATE;// CreditCards have a default interestRate of 0.2
     }
 
     // CreditCards may be instantiated with a creditLimit higher than 100 but not higher than 100000
     // CreditCards may be instantiated with an interestRate less than 0.2 but not lower than 0.1
-    public CreditCardAccount(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner,
+    public CreditCardAccount(AccountHolder owner, Money balance,
                              @DecimalMin(value = "100.0", message = "Credit limit must be greater than 100")
                              @DecimalMax(value = "100000.0", message = "Credit limit must be lesser than 100000")
                              Double creditLimit,
                              @DecimalMin(value = "0.1", message = "Interest rate must be greater than 0.1")
                              @DecimalMax(value = "0.2", message = "Interest rate must be lesser than 0.2")
                              Double interestRate) {
-        super(balance, primaryOwner, secondaryOwner);
+        super(owner, balance);
         this.creditLimit = new Money(BigDecimal.valueOf(creditLimit));
         this.interestRate = BigDecimal.valueOf(interestRate);
     }
