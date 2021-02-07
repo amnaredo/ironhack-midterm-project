@@ -3,8 +3,7 @@ package com.ironhack.bankingsystem.model.account;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.enums.Type;
 import com.ironhack.bankingsystem.model.transaction.Transaction;
-import com.ironhack.bankingsystem.model.user.User;
-import com.ironhack.bankingsystem.model.user.User;
+import com.ironhack.bankingsystem.model.user.impl.Owner;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -14,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
+//@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "account")
 public abstract class Account {
 
@@ -32,9 +31,9 @@ public abstract class Account {
     })
     private Money balance;
     @ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = CascadeType.ALL)
-    private User primaryOwner;
+    private Owner primaryOwner;
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
-    private User secondaryOwner;
+    private Owner secondaryOwner;
 
     @CreationTimestamp
     //@Temporal(TemporalType.TIMESTAMP)
@@ -55,22 +54,22 @@ public abstract class Account {
         this.balance = new Money(BigDecimal.ZERO);
     }
 
-    public Account(User primaryOwner) {
+    public Account(Owner primaryOwner) {
         this();
         this.primaryOwner = primaryOwner;
     }
 
-    public Account(User primaryOwner, User secondaryOwner) {
+    public Account(Owner primaryOwner, Owner secondaryOwner) {
         this(primaryOwner);
         this.secondaryOwner = secondaryOwner;
     }
 
-    public Account(User primaryOwner, Money balance) {
+    public Account(Owner primaryOwner, Money balance) {
         this(primaryOwner);
         this.balance = balance;
     }
 
-    public Account(User primaryOwner, User secondaryOwner, Money balance) {
+    public Account(Owner primaryOwner, Owner secondaryOwner, Money balance) {
         this(primaryOwner, secondaryOwner);
         this.balance = balance;
     }
@@ -85,19 +84,19 @@ public abstract class Account {
         this.balance = balance;
     }
 
-    public User getPrimaryOwner() {
+    public Owner getPrimaryOwner() {
         return primaryOwner;
     }
 
-    public void setPrimaryOwner(User primaryOwner) {
+    public void setPrimaryOwner(Owner primaryOwner) {
         this.primaryOwner = primaryOwner;
     }
 
-    public User getSecondaryOwner() {
+    public Owner getSecondaryOwner() {
         return secondaryOwner;
     }
 
-    public void setSecondaryOwner(User secondaryOwner) {
+    public void setSecondaryOwner(Owner secondaryOwner) {
         this.secondaryOwner = secondaryOwner;
     }
 

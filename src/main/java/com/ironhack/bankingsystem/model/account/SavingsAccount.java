@@ -2,7 +2,7 @@ package com.ironhack.bankingsystem.model.account;
 
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.enums.Type;
-import com.ironhack.bankingsystem.model.user.AccountHolder;
+import com.ironhack.bankingsystem.model.user.impl.AccountHolder;
 
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;

@@ -1,7 +1,7 @@
 package com.ironhack.bankingsystem.controller.impl;
 
 import com.ironhack.bankingsystem.controller.interfaces.IUserController;
-import com.ironhack.bankingsystem.model.user.User;
+import com.ironhack.bankingsystem.model.user.impl.Owner;
 import com.ironhack.bankingsystem.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class UserController implements IUserController {
 
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
-    public List<User> getUsers() {
+    public List<Owner> getUsers() {
         return userService.getUsers();
     }
 }

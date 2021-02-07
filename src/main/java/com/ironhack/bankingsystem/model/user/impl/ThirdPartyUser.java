@@ -1,4 +1,4 @@
-package com.ironhack.bankingsystem.model.user;
+package com.ironhack.bankingsystem.model.user.impl;
 
 import com.ironhack.bankingsystem.model.user.enums.Type;
 
@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
-public class ThirdPartyUser extends User {
+public class ThirdPartyUser extends Owner {
 
     private String hashedKey;
 

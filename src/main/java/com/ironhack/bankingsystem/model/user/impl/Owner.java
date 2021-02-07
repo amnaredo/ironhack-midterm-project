@@ -1,22 +1,24 @@
-package com.ironhack.bankingsystem.model.user;
+package com.ironhack.bankingsystem.model.user.impl;
 
 import com.ironhack.bankingsystem.model.account.Account;
 import com.ironhack.bankingsystem.model.user.enums.Type;
+import com.ironhack.bankingsystem.model.user.interfaces.IOwner;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+//@Table(name = "owner")
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-public class User {
+//@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.)
+public abstract class Owner implements IOwner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Type type;
 
     @OneToMany(mappedBy = "primaryOwner", fetch = FetchType.EAGER)
@@ -25,10 +27,10 @@ public class User {
     private List<Account> secondaryAccountList;
 
 
-    public User() {
+    public Owner() {
     }
 
-    public User(String name) {
+    public Owner(String name) {
         this.name = name;
     }
 

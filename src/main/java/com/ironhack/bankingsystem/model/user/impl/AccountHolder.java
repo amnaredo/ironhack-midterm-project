@@ -1,15 +1,14 @@
-package com.ironhack.bankingsystem.model.user;
+package com.ironhack.bankingsystem.model.user.impl;
 
-import com.ironhack.bankingsystem.model.account.Account;
+import com.ironhack.bankingsystem.model.user.Address;
 import com.ironhack.bankingsystem.model.user.enums.Type;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
-public class AccountHolder extends User {
+public class AccountHolder extends Owner {
 //    AccountHolders should be able to access their own accounts and only their accounts when passing
 //    the correct credentials using Basic Auth.
 //    AccountHolders have:
