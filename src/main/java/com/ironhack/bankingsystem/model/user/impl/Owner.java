@@ -24,14 +24,14 @@ public abstract class Owner implements IOwner {
     private Type type;
 
     @OneToMany(mappedBy = "primaryOwner", fetch = FetchType.EAGER/*, orphanRemoval = true*/)
-    private Collection<Account> primaryAccountList;
+    private List<Account> primaryAccounts;
     @OneToMany(mappedBy = "secondaryOwner", fetch = FetchType.EAGER)
-    private Collection<Account> secondaryAccountList;
+    private List<Account> secondaryAccounts;
 
 
     public Owner() {
-        primaryAccountList = new ArrayList<>();
-        secondaryAccountList = new ArrayList<>();
+        primaryAccounts = new ArrayList<>();
+        secondaryAccounts = new ArrayList<>();
     }
 
     public Owner(String name) {
@@ -56,33 +56,33 @@ public abstract class Owner implements IOwner {
         this.type = type;
     }
 
-    public Collection<Account> getPrimaryAccountList() {
-        return new ArrayList<Account>(primaryAccountList);
+    public List<Account> getPrimaryAccounts() {
+        return new ArrayList<Account>(primaryAccounts);
     }
 
-    public void setPrimaryAccountList(Collection<Account> primaryAccountList) {
-        this.primaryAccountList = primaryAccountList;
+    public void setPrimaryAccounts(List<Account> primaryAccounts) {
+        this.primaryAccounts = primaryAccounts;
     }
 
-    public Collection<Account> getSecondaryAccountList() {
-        return new ArrayList<Account>(secondaryAccountList);
+    public List<Account> getSecondaryAccounts() {
+        return new ArrayList<Account>(secondaryAccounts);
     }
 
-    public void setSecondaryAccountList(Collection<Account> secondaryAccountList) {
-        this.secondaryAccountList = secondaryAccountList;
+    public void setSecondaryAccounts(List<Account> secondaryAccounts) {
+        this.secondaryAccounts = secondaryAccounts;
     }
 
     public void addPrimaryAccount(Account account) {
-        if (primaryAccountList.contains(account))
+        if (primaryAccounts.contains(account))
             return;
-        primaryAccountList.add(account);
+        primaryAccounts.add(account);
         account.setPrimaryOwner(this);
     }
 
     public void addSecondaryAccount(Account account) {
-        if (secondaryAccountList.contains(account))
+        if (secondaryAccounts.contains(account))
             return;
-        secondaryAccountList.add(account);
+        secondaryAccounts.add(account);
         account.setSecondaryOwner(this);
     }
 

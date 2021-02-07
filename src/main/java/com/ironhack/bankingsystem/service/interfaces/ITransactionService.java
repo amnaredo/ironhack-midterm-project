@@ -7,4 +7,6 @@ import java.util.List;
 public interface ITransactionService {
 
     List<Transaction> getTransactions();
+    Transaction addTransaction(Transaction transaction);
+    void deleteAll();
 }

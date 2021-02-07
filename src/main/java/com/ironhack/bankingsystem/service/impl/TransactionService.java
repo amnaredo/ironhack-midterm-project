@@ -17,4 +17,12 @@ public class TransactionService implements ITransactionService {
     public List<Transaction> getTransactions() {
         return transactionRepository.findAll();
     }
+
+    public Transaction addTransaction(Transaction transaction) {
+        return transactionRepository.save(transaction);
+    }
+
+    public void deleteAll() {
+        transactionRepository.deleteAll();
+    }
 }

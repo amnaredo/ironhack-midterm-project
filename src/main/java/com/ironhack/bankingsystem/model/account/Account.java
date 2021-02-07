@@ -5,10 +5,14 @@ import com.ironhack.bankingsystem.model.account.enums.Type;
 import com.ironhack.bankingsystem.model.transaction.Transaction;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -30,9 +34,9 @@ public abstract class Account {
             @AttributeOverride(name = "currency", column = @Column(name = "balance_currency"))
     })
     private Money balance;
-    @ManyToOne(fetch = FetchType.EAGER, optional = false/*, cascade = CascadeType.ALL*/)
+    @ManyToOne(/*fetch = FetchType.EAGER, */optional = false/*, cascade = CascadeType.ALL*/)
     private Owner primaryOwner;
-    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @ManyToOne(/*fetch = FetchType.EAGER, */optional = true)
     private Owner secondaryOwner;
 
     @CreationTimestamp
@@ -40,10 +44,12 @@ public abstract class Account {
     private LocalDateTime creationDateTime;
     private LocalDateTime lastAccessDateTime;
 
-    @OneToMany(mappedBy = "toAccount")
-    private List<Transaction> depositTxs;
-    @OneToMany(mappedBy = "fromAccount")
-    private List<Transaction> withdrawalTxs;
+    @OneToMany(mappedBy = "toAccount", fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
+    private Collection<Transaction> depositTxs;
+    @OneToMany(mappedBy = "fromAccount", fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
+    private Collection<Transaction> withdrawalTxs;
 
     @Enumerated(EnumType.STRING)
     private Type type;
@@ -52,6 +58,9 @@ public abstract class Account {
     public Account() {
         this.creationDateTime = LocalDateTime.now();
         this.balance = new Money(BigDecimal.ZERO);
+
+        this.depositTxs = new ArrayList<>();
+        this.withdrawalTxs = new ArrayList<>();
     }
 
     public Account(Owner primaryOwner) {
@@ -140,5 +149,35 @@ public abstract class Account {
 
     protected void setType(Type type) {
         this.type = type;
+    }
+
+    public Collection<Transaction> getDepositTxs() {
+        return new ArrayList<Transaction>(depositTxs);
+    }
+
+    public void setDepositTxs(Collection<Transaction> depositTxs) {
+        this.depositTxs = depositTxs;
+    }
+
+    public Collection<Transaction> getWithdrawalTxs() {
+        return new ArrayList<Transaction>(withdrawalTxs);
+    }
+
+    public void setWithdrawalTxs(Collection<Transaction> withdrawalTxs) {
+        this.withdrawalTxs = withdrawalTxs;
+    }
+
+    public void addDepositTransaction(Transaction transaction) {
+        if (depositTxs.contains(transaction))
+            return;
+        depositTxs.add(transaction);
+        transaction.setToAccount(this);
+    }
+
+    public void addWithdrawalTransaction(Transaction transaction) {
+        if (withdrawalTxs.contains(transaction))
+            return;
+        withdrawalTxs.add(transaction);
+        transaction.setFromAccount(this);
     }
 }
