@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class OwnerServiceTest {
     @Autowired
-    private OwnerService userService;
+    private OwnerService ownerService;
 
     @Autowired
     private OwnerRepository ownerRepository;
@@ -49,14 +49,15 @@ class OwnerServiceTest {
 
     @Test
     void getUsers() {
-        List<Owner> owners = userService.getOwners();
+        List<Owner> owners = ownerService.getOwners();
         assertEquals(2, owners.size());
     }
+
 
     @Test
     void addUser() {
         Owner newOwner = new AccountHolder("Paco Pérez", LocalDate.of(1972, 1, 15), new Address("Calle Constitución", "Oviedo", "33300"));
-        userService.addOwner(newOwner);
+        ownerService.addOwner(newOwner);
 
 
         List<Owner> users = ownerRepository.findAll();

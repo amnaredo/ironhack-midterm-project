@@ -15,6 +15,13 @@ public class Money {
     private BigDecimal amount;
 
     /**
+     * Default constructor
+     */
+    public Money() {
+        currency = USD;
+    }
+
+    /**
      * Class constructor specifying amount, currency, and rounding
      **/
 

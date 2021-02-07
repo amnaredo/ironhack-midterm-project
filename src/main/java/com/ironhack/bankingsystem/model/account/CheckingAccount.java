@@ -3,13 +3,13 @@ package com.ironhack.bankingsystem.model.account;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.enums.Status;
 import com.ironhack.bankingsystem.model.account.enums.Type;
-import com.ironhack.bankingsystem.model.user.impl.AccountHolder;
+import com.ironhack.bankingsystem.model.user.impl.Owner;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "checking_account")
+//@Table(name = "checking_account")
 @PrimaryKeyJoinColumn(name = "id")
 public class CheckingAccount extends Account {
 //    Checking Accounts should have:
@@ -51,7 +51,7 @@ public class CheckingAccount extends Account {
     }
 
     // Checking accounts should have a minimumBalance of 250 and a monthlyMaintenanceFee of 12
-    public CheckingAccount(AccountHolder owner, Money balance, Integer secretKey) {
+    public CheckingAccount(Owner owner, Money balance, Integer secretKey) {
         super(owner, balance);
         this.secretKey = secretKey;
         this.minimumBalance = MINIMUM_BALANCE;

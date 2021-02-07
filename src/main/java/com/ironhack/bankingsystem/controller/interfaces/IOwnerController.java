@@ -4,7 +4,7 @@ import com.ironhack.bankingsystem.model.user.impl.Owner;
 
 import java.util.List;
 
-public interface IUserController {
+public interface IOwnerController {
 
-    List<Owner> getUsers();
+    List<Owner> getOwners();
 }

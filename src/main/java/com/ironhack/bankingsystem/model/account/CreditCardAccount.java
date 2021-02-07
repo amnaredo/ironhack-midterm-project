@@ -2,7 +2,7 @@ package com.ironhack.bankingsystem.model.account;
 
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.enums.Type;
-import com.ironhack.bankingsystem.model.user.impl.AccountHolder;
+import com.ironhack.bankingsystem.model.user.impl.Owner;
 
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "credit_card_account")
+//@Table(name = "credit_card_account")
 @PrimaryKeyJoinColumn(name = "id")
 public class CreditCardAccount extends Account {
 
@@ -50,7 +50,7 @@ public class CreditCardAccount extends Account {
         this.interestAddedDateTime = getCreationDateTime();
     }
 
-    public CreditCardAccount(AccountHolder owner, Money balance) {
+    public CreditCardAccount(Owner owner, Money balance) {
         super(owner, balance);
         this.creditLimit = DEFAULT_CREDIT_LIMIT;  // CreditCard accounts have a default creditLimit of 100
         this.interestRate = DEFAULT_INTEREST_RATE;// CreditCards have a default interestRate of 0.2
@@ -60,7 +60,7 @@ public class CreditCardAccount extends Account {
 
     // CreditCards may be instantiated with a creditLimit higher than 100 but not higher than 100000
     // CreditCards may be instantiated with an interestRate less than 0.2 but not lower than 0.1
-    public CreditCardAccount(AccountHolder owner, Money balance,
+    public CreditCardAccount(Owner owner, Money balance,
                              @DecimalMin(value = "100.0", message = "Credit limit must be greater than 100")
                              @DecimalMax(value = "100000.0", message = "Credit limit must be lesser than 100000")
                              Double creditLimit,

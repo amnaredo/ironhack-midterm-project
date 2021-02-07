@@ -41,11 +41,15 @@ public class OwnerService implements IOwnerService {
         }
     }
 
-    private AccountHolder addAccountHolder(AccountHolder accountHolder) {
+    public AccountHolder addAccountHolder(AccountHolder accountHolder) {
         return accountHolderRepository.save(accountHolder);
     }
 
-    private ThirdPartyUser addThirdPartyUser(ThirdPartyUser thirdPartyUser) {
+    public ThirdPartyUser addThirdPartyUser(ThirdPartyUser thirdPartyUser) {
         return thirdPartyUserRepository.save(thirdPartyUser);
+    }
+
+    public void deleteAll() {
+        ownerRepository.deleteAll();
     }
 }

@@ -8,4 +8,5 @@ public interface IOwnerService {
 
     List<Owner> getOwners();
     Owner addOwner(Owner owner);
+    void deleteAll();
 }

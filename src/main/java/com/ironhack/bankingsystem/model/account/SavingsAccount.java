@@ -2,7 +2,7 @@ package com.ironhack.bankingsystem.model.account;
 
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.enums.Type;
-import com.ironhack.bankingsystem.model.user.impl.AccountHolder;
+import com.ironhack.bankingsystem.model.user.impl.Owner;
 
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "savings_account")
+//@Table(name = "savings_account")
 @PrimaryKeyJoinColumn(name = "id")
 public class SavingsAccount extends CheckingAccount {
 //    Checking Accounts should have:
@@ -58,7 +58,7 @@ public class SavingsAccount extends CheckingAccount {
         this.setType(Type.SAVINGS);
     }
 
-    public SavingsAccount(AccountHolder owner, Money balance, Integer secretKey) {
+    public SavingsAccount(Owner owner, Money balance, Integer secretKey) {
         super(owner, balance, secretKey);
         setMonthlyMaintenanceFee(new Money(BigDecimal.ZERO));
         setMinimumBalance(DEFAULT_MINIMUM_BALANCE);
@@ -67,7 +67,7 @@ public class SavingsAccount extends CheckingAccount {
         this.setType(Type.SAVINGS);
     }
 
-    public SavingsAccount(AccountHolder owner, Money balance, Integer secretKey,
+    public SavingsAccount(Owner owner, Money balance, Integer secretKey,
                           @DecimalMin(value = "0.0", message = "Interest rate must be non negative")
                           @DecimalMax(value = "0.5", message = "Interest rate must be lesser than 0.5")
                           Double interestRate,

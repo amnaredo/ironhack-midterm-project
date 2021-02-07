@@ -7,4 +7,6 @@ import java.util.List;
 public interface IAccountService {
 
     List<Account> getAccounts();
+    Account addAccount(Account account);
+    void deleteAll();
 }

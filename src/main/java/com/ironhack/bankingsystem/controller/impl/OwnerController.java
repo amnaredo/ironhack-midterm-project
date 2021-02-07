@@ -1,6 +1,6 @@
 package com.ironhack.bankingsystem.controller.impl;
 
-import com.ironhack.bankingsystem.controller.interfaces.IUserController;
+import com.ironhack.bankingsystem.controller.interfaces.IOwnerController;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
 import com.ironhack.bankingsystem.service.interfaces.IOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class UserController implements IUserController {
+public class OwnerController implements IOwnerController {
 
     @Autowired
-    private IOwnerService userService;
+    private IOwnerService ownerService;
 
-    @GetMapping("/users")
+    @GetMapping("/owners")
     @ResponseStatus(HttpStatus.OK)
-    public List<Owner> getUsers() {
-        return userService.getOwners();
+    public List<Owner> getOwners() {
+        return ownerService.getOwners();
     }
 }

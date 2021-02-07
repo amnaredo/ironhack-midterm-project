@@ -2,13 +2,13 @@ package com.ironhack.bankingsystem.model.account;
 
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.enums.Type;
-import com.ironhack.bankingsystem.model.user.impl.AccountHolder;
+import com.ironhack.bankingsystem.model.user.impl.Owner;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "student_checking_account")
+//@Table(name = "student_checking_account")
 @PrimaryKeyJoinColumn(name = "id")
 public class StudentCheckingAccount extends CheckingAccount {
 
@@ -21,7 +21,7 @@ public class StudentCheckingAccount extends CheckingAccount {
         this.setType(Type.STUDENT_CHECKING);
     }
 
-    public StudentCheckingAccount(AccountHolder owner, Money balance, Integer secretKey) {
+    public StudentCheckingAccount(Owner owner, Money balance, Integer secretKey) {
         super(owner, balance, secretKey);
         setMonthlyMaintenanceFee(new Money(BigDecimal.ZERO));
         setMinimumBalance(new Money(BigDecimal.ZERO));

@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 //@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-@Table(name = "account")
+//@Table(name = "account")
 public abstract class Account {
 
     // The penaltyFee for all accounts should be 40.
@@ -30,7 +30,7 @@ public abstract class Account {
             @AttributeOverride(name = "currency", column = @Column(name = "balance_currency"))
     })
     private Money balance;
-    @ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false/*, cascade = CascadeType.ALL*/)
     private Owner primaryOwner;
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     private Owner secondaryOwner;
@@ -56,12 +56,14 @@ public abstract class Account {
 
     public Account(Owner primaryOwner) {
         this();
-        this.primaryOwner = primaryOwner;
+        //this.primaryOwner = primaryOwner;
+        setPrimaryOwner(primaryOwner);
     }
 
     public Account(Owner primaryOwner, Owner secondaryOwner) {
         this(primaryOwner);
-        this.secondaryOwner = secondaryOwner;
+        //this.secondaryOwner = secondaryOwner;
+        setSecondaryOwner(secondaryOwner);
     }
 
     public Account(Owner primaryOwner, Money balance) {
@@ -89,7 +91,11 @@ public abstract class Account {
     }
 
     public void setPrimaryOwner(Owner primaryOwner) {
+        if (primaryOwner == null)
+            return;
+
         this.primaryOwner = primaryOwner;
+        primaryOwner.addPrimaryAccount(this);
     }
 
     public Owner getSecondaryOwner() {
@@ -97,7 +103,11 @@ public abstract class Account {
     }
 
     public void setSecondaryOwner(Owner secondaryOwner) {
+        if (secondaryOwner == null)
+            return;
+
         this.secondaryOwner = secondaryOwner;
+        secondaryOwner.addSecondaryAccount(this);
     }
 
     public Money getPenaltyFee() {
@@ -124,7 +134,7 @@ public abstract class Account {
         return secondaryOwner != null;
     }
 
-    protected Type getType() {
+    public Type getType() {
         return type;
     }
 
