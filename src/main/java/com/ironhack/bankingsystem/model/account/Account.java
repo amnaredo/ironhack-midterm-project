@@ -1,5 +1,7 @@
 package com.ironhack.bankingsystem.model.account;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.enums.Type;
 import com.ironhack.bankingsystem.model.transaction.Transaction;
@@ -9,6 +11,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,13 +21,14 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.JOINED)
 //@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 //@Table(name = "account")
-public abstract class Account {
+public abstract class Account implements Serializable {
 
     // The penaltyFee for all accounts should be 40.
     private final static Money PENALTY_FEE = new Money(BigDecimal.valueOf(40.));
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonManagedReference
     private Long id;
 
     @Embedded
@@ -45,9 +49,11 @@ public abstract class Account {
 
     @OneToMany(mappedBy = "toAccount", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
+    @JsonBackReference
     private List<Transaction> depositTxs;
     @OneToMany(mappedBy = "fromAccount", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
+    @JsonBackReference
     private List<Transaction> withdrawalTxs;
 
     @Enumerated(EnumType.STRING)

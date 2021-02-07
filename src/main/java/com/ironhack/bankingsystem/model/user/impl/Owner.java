@@ -1,10 +1,13 @@
 package com.ironhack.bankingsystem.model.user.impl;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ironhack.bankingsystem.model.account.Account;
 import com.ironhack.bankingsystem.model.user.enums.Type;
 import com.ironhack.bankingsystem.model.user.interfaces.IOwner;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -13,18 +16,21 @@ import java.util.List;
 //@Table(name = "owner")
 @Inheritance(strategy = InheritanceType.JOINED)
 //@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.)
-public abstract class Owner implements IOwner {
+public abstract class Owner implements IOwner, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonManagedReference
     private Long id;
 
     private String name;
     @Enumerated(EnumType.STRING)
     private Type type;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "primaryOwner", fetch = FetchType.EAGER/*, orphanRemoval = true*/)
     private List<Account> primaryAccounts;
+    @JsonBackReference
     @OneToMany(mappedBy = "secondaryOwner", fetch = FetchType.EAGER)
     private List<Account> secondaryAccounts;
 
