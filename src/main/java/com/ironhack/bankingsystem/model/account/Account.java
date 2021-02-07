@@ -12,7 +12,6 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -46,10 +45,10 @@ public abstract class Account {
 
     @OneToMany(mappedBy = "toAccount", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
-    private Collection<Transaction> depositTxs;
+    private List<Transaction> depositTxs;
     @OneToMany(mappedBy = "fromAccount", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
-    private Collection<Transaction> withdrawalTxs;
+    private List<Transaction> withdrawalTxs;
 
     @Enumerated(EnumType.STRING)
     private Type type;
@@ -151,19 +150,19 @@ public abstract class Account {
         this.type = type;
     }
 
-    public Collection<Transaction> getDepositTxs() {
+    public List<Transaction> getDepositTxs() {
         return new ArrayList<Transaction>(depositTxs);
     }
 
-    public void setDepositTxs(Collection<Transaction> depositTxs) {
+    public void setDepositTxs(List<Transaction> depositTxs) {
         this.depositTxs = depositTxs;
     }
 
-    public Collection<Transaction> getWithdrawalTxs() {
+    public List<Transaction> getWithdrawalTxs() {
         return new ArrayList<Transaction>(withdrawalTxs);
     }
 
-    public void setWithdrawalTxs(Collection<Transaction> withdrawalTxs) {
+    public void setWithdrawalTxs(List<Transaction> withdrawalTxs) {
         this.withdrawalTxs = withdrawalTxs;
     }
 

@@ -11,13 +11,13 @@ public class ThirdPartyUser extends Owner {
     private String hashedKey;
 
     public ThirdPartyUser() {
-        this.setType(Type.THIRD_PARTY);
+        this.setType(Type.THIRD_PARTY_USER);
     }
 
     public ThirdPartyUser(String name, String hashedKey) {
         super(name);
         this.hashedKey = hashedKey;
-        this.setType(Type.THIRD_PARTY);
+        this.setType(Type.THIRD_PARTY_USER);
     }
 
     public String getHashedKey() {
