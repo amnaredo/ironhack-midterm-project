@@ -5,8 +5,8 @@ import com.ironhack.bankingsystem.model.user.impl.Owner;
 import com.ironhack.bankingsystem.model.user.impl.ThirdPartyUser;
 import com.ironhack.bankingsystem.repository.user.AccountHolderRepository;
 import com.ironhack.bankingsystem.repository.user.ThirdPartyUserRepository;
-import com.ironhack.bankingsystem.repository.user.UserRepository;
-import com.ironhack.bankingsystem.service.interfaces.IUserService;
+import com.ironhack.bankingsystem.repository.user.OwnerRepository;
+import com.ironhack.bankingsystem.service.interfaces.IOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,10 +15,10 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
-public class UserService implements IUserService {
+public class OwnerService implements IOwnerService {
 
     @Autowired
-    private UserRepository userRepository;
+    private OwnerRepository ownerRepository;
 
     @Autowired
     private AccountHolderRepository accountHolderRepository;
@@ -26,11 +26,11 @@ public class UserService implements IUserService {
     @Autowired
     private ThirdPartyUserRepository thirdPartyUserRepository;
 
-    public List<Owner> getUsers() {
-        return userRepository.findAll();
+    public List<Owner> getOwners() {
+        return ownerRepository.findAll();
     }
 
-    public Owner addUser(Owner owner) {
+    public Owner addOwner(Owner owner) {
         switch (owner.getType()) {
             case ACCOUNT_HOLDER:
                 return addAccountHolder((AccountHolder) owner);

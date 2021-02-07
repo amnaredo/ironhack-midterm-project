@@ -4,8 +4,8 @@ import com.ironhack.bankingsystem.model.user.impl.Owner;
 
 import java.util.List;
 
-public interface IUserService {
+public interface IOwnerService {
 
-    List<Owner> getUsers();
-    Owner addUser(Owner owner);
+    List<Owner> getOwners();
+    Owner addOwner(Owner owner);
 }

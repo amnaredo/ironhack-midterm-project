@@ -6,7 +6,7 @@ import com.ironhack.bankingsystem.model.user.impl.Owner;
 import com.ironhack.bankingsystem.model.user.impl.ThirdPartyUser;
 import com.ironhack.bankingsystem.repository.user.AccountHolderRepository;
 import com.ironhack.bankingsystem.repository.user.ThirdPartyUserRepository;
-import com.ironhack.bankingsystem.repository.user.UserRepository;
+import com.ironhack.bankingsystem.repository.user.OwnerRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class OwnerServiceTest {
     @Autowired
-    private UserService userService;
+    private OwnerService userService;
 
     @Autowired
-    private UserRepository userRepository;
+    private OwnerRepository ownerRepository;
 
     @Autowired
     private AccountHolderRepository accountHolderRepository;
@@ -44,22 +44,22 @@ class OwnerServiceTest {
     void tearDown() {
         accountHolderRepository.deleteAll();
         thirdPartyUserRepository.deleteAll();
-        userRepository.deleteAll();
+        ownerRepository.deleteAll();
     }
 
     @Test
     void getUsers() {
-        List<Owner> owners = userService.getUsers();
+        List<Owner> owners = userService.getOwners();
         assertEquals(2, owners.size());
     }
 
     @Test
     void addUser() {
-//        User newUser = new AccountHolder("Paco Pérez", LocalDate.of(1972, 1, 15), new Address("Calle Constitución", "Oviedo", "33300"));
-//        userService.addUser(newUser);
-//
-//
-//        List<User> users = userRepository.findAll();
-//        assertEquals(3, users.size());
+        Owner newOwner = new AccountHolder("Paco Pérez", LocalDate.of(1972, 1, 15), new Address("Calle Constitución", "Oviedo", "33300"));
+        userService.addOwner(newOwner);
+
+
+        List<Owner> users = ownerRepository.findAll();
+        assertEquals(3, users.size());
     }
 }
