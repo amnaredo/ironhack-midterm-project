@@ -90,4 +90,8 @@ public class CreditCardAccount extends Account {
     public void setInterestRate(BigDecimal interestRate) {
         this.interestRate = interestRate;
     }
+
+    public Money getMinimumBalance() {
+        return new Money(BigDecimal.ZERO);
+    }
 }

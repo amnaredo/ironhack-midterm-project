@@ -1,5 +1,7 @@
 package com.ironhack.bankingsystem.dto.account;
 
+import org.springframework.format.annotation.NumberFormat;
+
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
@@ -9,24 +11,24 @@ import java.math.BigDecimal;
 public class MoneyTransferDTO {
 
     //private Integer fromAccountId;
-    @NotBlank/*(message = "Account ID is required")*/
+    @NumberFormat/*(message = "Account ID is required")*/
     @Min(1)
-    private Integer toAccount;
+    private Long toAccountId;
 
     @Digits(integer = 6, fraction = 2/*, message = "Wrong amount format"*/)
     @DecimalMin(value = "0"/*, message = "Amount must be non negative"*/)
     private BigDecimal amount;
-    private String currency;
+    //private String currency;
     @NotBlank/*(message = "Name is required")*/
     private String name;
     private String description;
 
-    public Integer getToAccount() {
-        return toAccount;
+    public Long getToAccountId() {
+        return toAccountId;
     }
 
-    public void setToAccount(Integer toAccount) {
-        this.toAccount = toAccount;
+    public void setToAccount(Long toAccountId) {
+        this.toAccountId = toAccountId;
     }
 
     public BigDecimal getAmount() {
@@ -37,13 +39,13 @@ public class MoneyTransferDTO {
         this.amount = amount;
     }
 
-    public String getCurrency() {
-        return currency;
-    }
+//    public String getCurrency() {
+//        return currency;
+//    }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
+//    public void setCurrency(String currency) {
+//        this.currency = currency;
+//    }
 
     public String getName() {
         return name;

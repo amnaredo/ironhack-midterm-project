@@ -185,4 +185,6 @@ public abstract class Account implements Serializable {
         withdrawalTxs.add(transaction);
         transaction.setFromAccount(this);
     }
+
+    public abstract Money getMinimumBalance();
 }

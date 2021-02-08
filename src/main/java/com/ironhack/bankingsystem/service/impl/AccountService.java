@@ -2,14 +2,18 @@ package com.ironhack.bankingsystem.service.impl;
 
 import com.ironhack.bankingsystem.dto.account.CheckingAccountDTO;
 import com.ironhack.bankingsystem.dto.account.CreditCardAccountDTO;
+import com.ironhack.bankingsystem.dto.account.MoneyTransferDTO;
 import com.ironhack.bankingsystem.dto.account.SavingsAccountDTO;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.*;
+import com.ironhack.bankingsystem.model.transaction.Transaction;
 import com.ironhack.bankingsystem.model.user.enums.Type;
 import com.ironhack.bankingsystem.model.user.impl.AccountHolder;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
 import com.ironhack.bankingsystem.repository.account.*;
 import com.ironhack.bankingsystem.service.interfaces.IAccountService;
+import com.ironhack.bankingsystem.service.interfaces.IMoneyTransferService;
+import com.ironhack.bankingsystem.service.interfaces.IOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,11 +28,12 @@ import java.util.Optional;
 public class AccountService implements IAccountService {
 
     @Autowired
-    private OwnerService ownerService;
+    private IOwnerService ownerService;
+    @Autowired
+    private IMoneyTransferService moneyTransferService;
 
     @Autowired
     private AccountRepository accountRepository;
-
     @Autowired
     private CheckingAccountRepository checkingAccountRepository;
     @Autowired
@@ -40,6 +45,14 @@ public class AccountService implements IAccountService {
 
     public List<Account> getAccounts() {
         return accountRepository.findAll();
+    }
+
+    public Boolean existsAccount(Long id) {
+        return accountRepository.existsById(id);
+    }
+
+    public Optional<Account> getAccountById(Long id) {
+        return accountRepository.findById(id);
     }
 
     public Account addAccount(Account account) {
@@ -126,6 +139,31 @@ public class AccountService implements IAccountService {
         creditCardAccount.setInterestRate(creditCardAccountDTO.getInterestRate());
 
         return saveCreditCardAccount(creditCardAccount);
+    }
+
+    public Transaction startMoneyTransfer(MoneyTransferDTO moneyTransferDTO, Long id) {
+
+        // todo security checks (maybe at the controller...)
+        //      -> the logged user owns the account id?
+
+        // check the existence of the referenced accounts
+        if(!existsAccount(id))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Origin account not found");
+        if(!existsAccount(moneyTransferDTO.getToAccountId()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Destination account not found");
+
+        // check the name of the author (it's name is the primary or secondary owner's)
+        Optional<Account> account = getAccountById(id);
+        String primaryName = account.get().getPrimaryOwner().getName();
+        String secondaryName = account.get().hasSecondaryOwner() ? account.get().getSecondaryOwner().getName() : "";
+
+        String transferName = moneyTransferDTO.getName();
+
+        if (!transferName.equalsIgnoreCase(primaryName) && !transferName.equalsIgnoreCase(secondaryName))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name provided does not match with the account owner");
+
+        // everything ok, next checks are MoneyTransferService responsibility
+        return moneyTransferService.doMoneyTransfer(moneyTransferDTO, id);
     }
 
     private CheckingAccount saveCheckingAccount(CheckingAccount account) {
