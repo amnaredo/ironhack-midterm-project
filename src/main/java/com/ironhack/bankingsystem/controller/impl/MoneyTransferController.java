@@ -24,7 +24,7 @@ public class MoneyTransferController implements IMoneyTransferController {
 
     @GetMapping("/accounts/{id}")
     public Account getAccount(@PathVariable @NumberFormat @Min(1) Long id) {
-        return accountService.getAccountById(id).get();
+        return accountService.getAccountById(id);
     }
 
     @PostMapping("/accounts/{id}")

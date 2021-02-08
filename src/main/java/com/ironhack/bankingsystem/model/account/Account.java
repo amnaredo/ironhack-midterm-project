@@ -92,7 +92,7 @@ public abstract class Account implements Serializable {
 
 
     public Money getBalance() {
-        setLastAccessDateTime(LocalDateTime.now());
+        //setLastAccessDateTime(LocalDateTime.now());
         return balance;
     }
 
@@ -187,4 +187,8 @@ public abstract class Account implements Serializable {
     }
 
     public abstract Money getMinimumBalance();
+
+    public abstract Boolean updateLastAccessDateTime();
+    public abstract BigDecimal getLastInterestGenerated();
+    public abstract LocalDateTime getInterestAddedDateTime();
 }

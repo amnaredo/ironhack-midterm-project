@@ -8,6 +8,7 @@ import com.ironhack.bankingsystem.model.user.impl.Owner;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 //@Table(name = "checking_account")
@@ -76,6 +77,19 @@ public class CheckingAccount extends Account {
 
     public Money getMinimumBalance() {
         return minimumBalance;
+    }
+
+    public Boolean updateLastAccessDateTime() {
+        setLastAccessDateTime(LocalDateTime.now());
+        return false;
+    }
+
+    public BigDecimal getLastInterestGenerated() {
+        return BigDecimal.ZERO;
+    }
+
+    public LocalDateTime getInterestAddedDateTime() {
+        return getLastAccessDateTime();
     }
 
     public void setMinimumBalance(Money minimumBalance) {

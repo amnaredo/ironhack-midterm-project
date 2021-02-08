@@ -28,8 +28,8 @@ public class MoneyTransferService implements IMoneyTransferService {
 
     public Transaction doMoneyTransfer(MoneyTransferDTO moneyTransferDTO, Long id) {
 
-        Account origin = accountService.getAccountById(id).get();
-        Account destination = accountService.getAccountById(moneyTransferDTO.getToAccountId()).get();
+        Account origin = accountService.getAccountById(id);
+        Account destination = accountService.getAccountById(moneyTransferDTO.getToAccountId());
 
         // check enough funds in origin account
         BigDecimal currentBalance = origin.getBalance().getAmount();

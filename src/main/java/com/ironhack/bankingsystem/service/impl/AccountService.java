@@ -11,12 +11,15 @@ import com.ironhack.bankingsystem.repository.account.*;
 import com.ironhack.bankingsystem.service.interfaces.IAccountService;
 import com.ironhack.bankingsystem.service.interfaces.IMoneyTransferService;
 import com.ironhack.bankingsystem.service.interfaces.IOwnerService;
+import com.ironhack.bankingsystem.service.interfaces.ITransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +31,8 @@ public class AccountService implements IAccountService {
     private IOwnerService ownerService;
     @Autowired
     private IMoneyTransferService moneyTransferService;
+    @Autowired
+    private ITransactionService transactionService;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -48,8 +53,27 @@ public class AccountService implements IAccountService {
         return accountRepository.existsById(id);
     }
 
-    public Optional<Account> getAccountById(Long id) {
-        return accountRepository.findById(id);
+    public Account getAccountById(Long id) {
+        if(!accountRepository.existsById(id))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
+
+        Account account = accountRepository.findById(id).get();
+        LocalDateTime interestAddedDateTime = account.getInterestAddedDateTime();
+        LocalDateTime lastAccessDateTime = account.getLastAccessDateTime();
+        if (account.updateLastAccessDateTime()) {
+            Transaction transaction = new Transaction(new Money(account.getLastInterestGenerated()));
+            //transaction.setFromAccount(null);
+            transaction.setToAccount(account);
+            transaction.setAuthorName("SantanderBank");
+            transaction.setDescription("Earned interests since " + interestAddedDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+
+            transactionService.addTransaction(transaction);
+            account = addAccount(account);
+        }
+
+        // this is for the owner to see the last access time
+        account.setLastAccessDateTime(lastAccessDateTime);
+        return account;
     }
 
     public Account addAccount(Account account) {
@@ -150,9 +174,9 @@ public class AccountService implements IAccountService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Destination account not found");
 
         // check the name of the author (it's name is the primary or secondary owner's)
-        Optional<Account> account = getAccountById(id);
-        String primaryName = account.get().getPrimaryOwner().getName();
-        String secondaryName = account.get().hasSecondaryOwner() ? account.get().getSecondaryOwner().getName() : "";
+        Account account = getAccountById(id);
+        String primaryName = account.getPrimaryOwner().getName();
+        String secondaryName = account.hasSecondaryOwner() ? account.getSecondaryOwner().getName() : "";
 
         String transferName = moneyTransferDTO.getName();
 
@@ -167,7 +191,7 @@ public class AccountService implements IAccountService {
         if(!existsAccount(id))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account not found");
 
-        Account account = getAccountById(id).get();
+        Account account = getAccountById(id);
         account.setBalance(new Money(newBalanceDTO.getBalance()));
 
         addAccount(account);

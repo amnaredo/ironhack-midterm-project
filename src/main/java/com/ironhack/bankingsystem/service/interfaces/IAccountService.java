@@ -16,7 +16,7 @@ public interface IAccountService {
     Account addAccount(Account account);
 
     Boolean existsAccount(Long id);
-    Optional<Account> getAccountById(Long id);
+    Account getAccountById(Long id);
 
     CheckingAccount addChecking(CheckingAccountDTO checkingAccountDTO, Long id, Optional<Long> otherId);
     SavingsAccount addSavings(SavingsAccountDTO savingsAccountDTO, Long id, Optional<Long> otherId);
