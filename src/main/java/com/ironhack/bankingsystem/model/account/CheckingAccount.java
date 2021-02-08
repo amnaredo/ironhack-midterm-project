@@ -6,6 +6,7 @@ import com.ironhack.bankingsystem.model.account.enums.Type;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
 
 @Entity
@@ -16,7 +17,7 @@ public class CheckingAccount extends Account {
 //
 //    A balance
 //    A secretKey
-//    A PrimaryOwnerS
+//    A PrimaryOwner
 //    An optional SecondaryOwner
 //    A minimumBalance
 //    A penaltyFee
@@ -29,7 +30,7 @@ public class CheckingAccount extends Account {
     private final static Money MONTHLY_MAINTENANCE_FEE = new Money(BigDecimal.valueOf(12L));
 
 
-    private Integer secretKey; // todo ?
+    private String secretKey; // todo ?
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "currency", column = @Column(name = "min_balance_currency")),
@@ -51,7 +52,9 @@ public class CheckingAccount extends Account {
     }
 
     // Checking accounts should have a minimumBalance of 250 and a monthlyMaintenanceFee of 12
-    public CheckingAccount(Owner owner, Money balance, Integer secretKey) {
+    public CheckingAccount(Owner owner, Money balance,
+                           @Pattern(regexp = "^[0-9]{4,8}$")
+                           String secretKey) {
         super(owner, balance);
         this.secretKey = secretKey;
         this.minimumBalance = MINIMUM_BALANCE;
@@ -60,11 +63,11 @@ public class CheckingAccount extends Account {
         this.setType(Type.CHECKING);
     }
 
-    public Integer getSecretKey() {
+    public String getSecretKey() {
         return secretKey;
     }
 
-    public void setSecretKey(Integer secretKey) {
+    public void setSecretKey(String secretKey) {
         this.secretKey = secretKey;
     }
 

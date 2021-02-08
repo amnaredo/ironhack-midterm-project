@@ -14,7 +14,7 @@ public class MoneyTransferDTO {
     private Integer toAccount;
 
     @Digits(integer = 6, fraction = 2, message = "Wrong amount format")
-    @DecimalMin(value = "0", message = "Amount must be positive")
+    @DecimalMin(value = "0", message = "Amount must be non negative")
     private BigDecimal amount;
     private String currency;
     @NotBlank(message = "Name is required")

@@ -21,7 +21,7 @@ public class StudentCheckingAccount extends CheckingAccount {
         this.setType(Type.STUDENT_CHECKING);
     }
 
-    public StudentCheckingAccount(Owner owner, Money balance, Integer secretKey) {
+    public StudentCheckingAccount(Owner owner, Money balance, String secretKey) {
         super(owner, balance, secretKey);
         setMonthlyMaintenanceFee(new Money(BigDecimal.ZERO));
         setMinimumBalance(new Money(BigDecimal.ZERO));

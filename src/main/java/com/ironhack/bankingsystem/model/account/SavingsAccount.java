@@ -58,7 +58,7 @@ public class SavingsAccount extends CheckingAccount {
         this.setType(Type.SAVINGS);
     }
 
-    public SavingsAccount(Owner owner, Money balance, Integer secretKey) {
+    public SavingsAccount(Owner owner, Money balance, String secretKey) {
         super(owner, balance, secretKey);
         setMonthlyMaintenanceFee(new Money(BigDecimal.ZERO));
         setMinimumBalance(DEFAULT_MINIMUM_BALANCE);
@@ -67,7 +67,7 @@ public class SavingsAccount extends CheckingAccount {
         this.setType(Type.SAVINGS);
     }
 
-    public SavingsAccount(Owner owner, Money balance, Integer secretKey,
+    public SavingsAccount(Owner owner, Money balance, String secretKey,
                           @DecimalMin(value = "0.0", message = "Interest rate must be non negative")
                           @DecimalMax(value = "0.5", message = "Interest rate must be lesser than 0.5")
                           Double interestRate,

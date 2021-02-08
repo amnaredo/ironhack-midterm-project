@@ -45,9 +45,9 @@ class TransactionServiceTest {
         ownerService.addOwner(accountHolder);
         ownerService.addOwner(thirdPartyUser);
 
-        CheckingAccount checkingAccount = new CheckingAccount(thirdPartyUser, new Money(BigDecimal.TEN), 1234);
-        StudentCheckingAccount studentCheckingAccount = new StudentCheckingAccount(accountHolder, new Money(BigDecimal.ONE), 4321);
-        SavingsAccount savingsAccount = new SavingsAccount(thirdPartyUser, new Money(BigDecimal.TEN), 1234);
+        CheckingAccount checkingAccount = new CheckingAccount(thirdPartyUser, new Money(BigDecimal.TEN), "1234");
+        StudentCheckingAccount studentCheckingAccount = new StudentCheckingAccount(accountHolder, new Money(BigDecimal.ONE), "4321");
+        SavingsAccount savingsAccount = new SavingsAccount(thirdPartyUser, new Money(BigDecimal.TEN), "1234");
         CreditCardAccount creditCardAccount = new CreditCardAccount(accountHolder, new Money(BigDecimal.ZERO));
 
         accountService.addAccount(checkingAccount);

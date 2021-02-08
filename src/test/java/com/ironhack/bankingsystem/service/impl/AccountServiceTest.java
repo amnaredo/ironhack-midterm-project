@@ -47,9 +47,9 @@ class AccountServiceTest {
         ownerService.addOwner(accountHolder);
         ownerService.addOwner(thirdPartyUser);
 
-        CheckingAccount checkingAccount = new CheckingAccount(thirdPartyUser, new Money(BigDecimal.TEN), 1234);
-        StudentCheckingAccount studentCheckingAccount = new StudentCheckingAccount(accountHolder, new Money(BigDecimal.ONE), 4321);
-        SavingsAccount savingsAccount = new SavingsAccount(thirdPartyUser, new Money(BigDecimal.TEN), 1234);
+        CheckingAccount checkingAccount = new CheckingAccount(thirdPartyUser, new Money(BigDecimal.TEN), "1234");
+        StudentCheckingAccount studentCheckingAccount = new StudentCheckingAccount(accountHolder, new Money(BigDecimal.ONE), "4321");
+        SavingsAccount savingsAccount = new SavingsAccount(thirdPartyUser, new Money(BigDecimal.TEN), "1234");
         CreditCardAccount creditCardAccount = new CreditCardAccount(accountHolder, new Money(BigDecimal.ZERO));
 
         checkingAccountRepository.save(checkingAccount);
@@ -78,7 +78,7 @@ class AccountServiceTest {
     void addAccount() {
         AccountHolder owner = new AccountHolder("Pedro Perez", LocalDate.of(1959, 5, 6), new Address("Calle Dos", "Madrid", "28080"));
         ownerService.addOwner(owner);
-        CheckingAccount account = new CheckingAccount(owner, new Money(BigDecimal.ZERO), 1234);
+        CheckingAccount account = new CheckingAccount(owner, new Money(BigDecimal.ZERO), "1234");
 
         accountService.addAccount(account);
 
