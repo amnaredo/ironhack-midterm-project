@@ -1,4 +1,4 @@
-package com.ironhack.bankingsystem.dto;
+package com.ironhack.bankingsystem.dto.account;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;

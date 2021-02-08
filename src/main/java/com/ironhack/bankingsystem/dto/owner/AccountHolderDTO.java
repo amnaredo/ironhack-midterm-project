@@ -1,7 +1,6 @@
-package com.ironhack.bankingsystem.dto;
+package com.ironhack.bankingsystem.dto.owner;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 public class AccountHolderDTO extends OwnerDTO {
 

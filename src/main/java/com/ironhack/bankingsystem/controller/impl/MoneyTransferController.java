@@ -1,7 +1,7 @@
 package com.ironhack.bankingsystem.controller.impl;
 
 import com.ironhack.bankingsystem.controller.interfaces.IMoneyTransferController;
-import com.ironhack.bankingsystem.dto.MoneyTransferDTO;
+import com.ironhack.bankingsystem.dto.account.MoneyTransferDTO;
 import com.ironhack.bankingsystem.model.transaction.Transaction;
 import org.springframework.web.bind.annotation.RestController;
 
