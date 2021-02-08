@@ -9,15 +9,15 @@ import java.math.BigDecimal;
 public class MoneyTransferDTO {
 
     //private Integer fromAccountId;
-    @NotBlank(message = "Account ID is required")
+    @NotBlank/*(message = "Account ID is required")*/
     @Min(1)
     private Integer toAccount;
 
-    @Digits(integer = 6, fraction = 2, message = "Wrong amount format")
-    @DecimalMin(value = "0", message = "Amount must be non negative")
+    @Digits(integer = 6, fraction = 2/*, message = "Wrong amount format"*/)
+    @DecimalMin(value = "0"/*, message = "Amount must be non negative"*/)
     private BigDecimal amount;
     private String currency;
-    @NotBlank(message = "Name is required")
+    @NotBlank/*(message = "Name is required")*/
     private String name;
     private String description;
 

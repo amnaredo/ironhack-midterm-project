@@ -1,10 +1,25 @@
 package com.ironhack.bankingsystem.controller.interfaces;
 
+import com.ironhack.bankingsystem.dto.account.CheckingAccountDTO;
+import com.ironhack.bankingsystem.dto.account.CreditCardAccountDTO;
+import com.ironhack.bankingsystem.dto.account.SavingsAccountDTO;
 import com.ironhack.bankingsystem.model.account.Account;
+import com.ironhack.bankingsystem.model.account.CheckingAccount;
+import com.ironhack.bankingsystem.model.account.CreditCardAccount;
+import com.ironhack.bankingsystem.model.account.SavingsAccount;
 
 import java.util.List;
 
 public interface IAccountController {
 
     List<Account> getAccounts();
+
+    CheckingAccount addChecking(CheckingAccountDTO checkingAccountDTO, Long ownerId);
+    CheckingAccount addChecking(CheckingAccountDTO checkingAccountDTO, Long ownerId, Long otherOwnerId);
+
+    SavingsAccount addSavings(SavingsAccountDTO savingsAccountDTO, Long ownerId);
+    SavingsAccount addSavings(SavingsAccountDTO savingsAccountDTO, Long ownerId, Long otherOwnerId);
+
+    CreditCardAccount addCreditCard(CreditCardAccountDTO creditCardAccountDTO, Long ownerId);
+    CreditCardAccount addCreditCard(CreditCardAccountDTO creditCardAccountDTO, Long ownerId, Long otherOwnerId);
 }

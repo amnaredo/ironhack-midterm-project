@@ -18,6 +18,8 @@ public class StudentCheckingAccount extends CheckingAccount {
 //    A minimumBalance
 
     public StudentCheckingAccount() {
+        setMonthlyMaintenanceFee(new Money(BigDecimal.ZERO));
+        setMinimumBalance(new Money(BigDecimal.ZERO));
         this.setType(Type.STUDENT_CHECKING);
     }
 

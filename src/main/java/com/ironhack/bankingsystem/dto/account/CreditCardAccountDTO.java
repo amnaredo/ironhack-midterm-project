@@ -11,7 +11,7 @@ public class CreditCardAccountDTO extends AccountDTO {
     @DecimalMin("0.1")
     @DecimalMax("0.2")
     private BigDecimal interestRate = BigDecimal.valueOf(0.2);
-    @Digits(integer = 4, fraction = 2)
+    @Digits(integer = 6, fraction = 2)
     @DecimalMin("100")
     @DecimalMax("100000")
     private BigDecimal creditLimit = BigDecimal.valueOf(100.0);

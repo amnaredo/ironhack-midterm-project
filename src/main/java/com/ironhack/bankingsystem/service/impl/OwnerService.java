@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OwnerService implements IOwnerService {
@@ -33,6 +34,14 @@ public class OwnerService implements IOwnerService {
 
     public List<Owner> getOwners() {
         return ownerRepository.findAll();
+    }
+
+    public Boolean existsOwner(Long id) {
+        return ownerRepository.existsById(id);
+    }
+
+    public Optional<Owner> getOwnerById(Long id) {
+        return ownerRepository.findById(id);
     }
 
     public Owner addOwner(Owner owner) {

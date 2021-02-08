@@ -30,7 +30,7 @@ public class CheckingAccount extends Account {
     private final static Money MONTHLY_MAINTENANCE_FEE = new Money(BigDecimal.valueOf(12L));
 
 
-    private String secretKey; // todo ?
+    private String secretKey;
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "currency", column = @Column(name = "min_balance_currency")),
@@ -48,6 +48,9 @@ public class CheckingAccount extends Account {
 
 
     public CheckingAccount() {
+        this.minimumBalance = MINIMUM_BALANCE;
+        this.monthlyMaintenanceFee = MONTHLY_MAINTENANCE_FEE;
+        this.status = Status.ACTIVE;
         this.setType(Type.CHECKING);
     }
 
@@ -75,7 +78,7 @@ public class CheckingAccount extends Account {
         return minimumBalance;
     }
 
-    protected void setMinimumBalance(Money minimumBalance) {
+    public void setMinimumBalance(Money minimumBalance) {
         this.minimumBalance = minimumBalance;
     }
 
