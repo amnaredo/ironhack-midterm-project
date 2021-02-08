@@ -44,10 +44,10 @@ public class MoneyTransferService implements IMoneyTransferService {
                 result.compareTo(origin.getMinimumBalance().getAmount()) < 0;
 
         // make the transaction
-        Transaction transaction = new Transaction();
+        Transaction transaction = new Transaction(new Money(transferAmount));
         transaction.setFromAccount(origin);
         transaction.setToAccount(destination);
-        transaction.setAmount(new Money(transferAmount));
+        //transaction.setAmount(new Money(transferAmount));
         transaction.setAuthorName(moneyTransferDTO.getName());
         transaction.setDescription(moneyTransferDTO.getDescription());
 
@@ -59,10 +59,10 @@ public class MoneyTransferService implements IMoneyTransferService {
                 Thread.sleep(2000L); // wait 2 seconds to avoid fraud detection
             } catch (Exception e) { }
 
-            Transaction deductionTransaction = new Transaction();
+            Transaction deductionTransaction = new Transaction(origin.getPenaltyFee());
             deductionTransaction.setFromAccount(origin);
             //deductionTransaction.setToAccount(null);
-            deductionTransaction.setAmount(origin.getPenaltyFee());
+            //deductionTransaction.setAmount(origin.getPenaltyFee()); // set amount before accounts
             deductionTransaction.setAuthorName(moneyTransferDTO.getName());
             deductionTransaction.setDescription("Penalty fee deducted :)");
 

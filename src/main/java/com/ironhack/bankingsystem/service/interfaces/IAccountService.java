@@ -27,5 +27,7 @@ public interface IAccountService {
 
     Transaction startMoneyTransfer(MoneyTransferDTO moneyTransferDTO, Long id);
 
+    Account updateBalance(NewBalanceDTO newBalanceDTO, Long id);
+
     void deleteAll();
 }

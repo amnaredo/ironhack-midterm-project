@@ -1,5 +1,6 @@
 package com.ironhack.bankingsystem.model.transaction;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.Account;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,8 +16,10 @@ public class Transaction {
     private Long id;
 
     @ManyToOne
+    @JsonBackReference
     private Account fromAccount;
     @ManyToOne
+    @JsonBackReference
     private Account toAccount;
 
     @CreationTimestamp
@@ -34,11 +37,15 @@ public class Transaction {
         setTimestamp(LocalDateTime.now());
     }
 
-    public Transaction(Account fromAccount, Account toAccount, Money amount, String authorName, String description) {
+    public Transaction(Money amount) {
         this();
+        this.amount = amount;
+    }
+
+    public Transaction(Account fromAccount, Account toAccount, Money amount, String authorName, String description) {
+        this(amount);
         setFromAccount(fromAccount);
         setToAccount(toAccount);
-        setAmount(amount);
         setAuthorName(authorName);
         setDescription(description);
     }
@@ -61,6 +68,9 @@ public class Transaction {
 
         this.fromAccount = fromAccount;
         fromAccount.addWithdrawalTransaction(this);
+
+        // decrease money
+        fromAccount.getBalance().decreaseAmount(this.amount);
     }
 
     public Account getToAccount() {
@@ -73,6 +83,9 @@ public class Transaction {
 
         this.toAccount = toAccount;
         toAccount.addDepositTransaction(this);
+
+        // increase money
+        toAccount.getBalance().increaseAmount(this.amount);
     }
 
     public LocalDateTime getTimestamp() {
