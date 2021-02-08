@@ -1,9 +1,6 @@
 package com.ironhack.bankingsystem.service.impl;
 
-import com.ironhack.bankingsystem.dto.account.CheckingAccountDTO;
-import com.ironhack.bankingsystem.dto.account.CreditCardAccountDTO;
-import com.ironhack.bankingsystem.dto.account.MoneyTransferDTO;
-import com.ironhack.bankingsystem.dto.account.SavingsAccountDTO;
+import com.ironhack.bankingsystem.dto.account.*;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.*;
 import com.ironhack.bankingsystem.model.transaction.Transaction;
@@ -164,6 +161,16 @@ public class AccountService implements IAccountService {
 
         // everything ok, next checks are MoneyTransferService responsibility
         return moneyTransferService.doMoneyTransfer(moneyTransferDTO, id);
+    }
+
+    public void updateBalance(NewBalanceDTO newBalanceDTO, Long id) {
+        if(!existsAccount(id))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account not found");
+
+        Account account = getAccountById(id).get();
+        account.setBalance(new Money(newBalanceDTO.getBalance()));
+
+        addAccount(account);
     }
 
     private CheckingAccount saveCheckingAccount(CheckingAccount account) {

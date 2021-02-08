@@ -9,6 +9,7 @@ import java.util.Currency;
 public class Money {
 
     private static final Currency USD = Currency.getInstance("USD");
+    private static final Currency EUR = Currency.getInstance("EUR");
     private static final RoundingMode DEFAULT_ROUNDING = RoundingMode.HALF_EVEN;
 
     private final Currency currency;
@@ -18,7 +19,8 @@ public class Money {
      * Default constructor
      */
     public Money() {
-        currency = USD;
+        //currency = USD;
+        currency = EUR;
     }
 
     /**

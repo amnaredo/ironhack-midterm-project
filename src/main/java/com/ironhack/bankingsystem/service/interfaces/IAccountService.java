@@ -1,9 +1,6 @@
 package com.ironhack.bankingsystem.service.interfaces;
 
-import com.ironhack.bankingsystem.dto.account.CheckingAccountDTO;
-import com.ironhack.bankingsystem.dto.account.CreditCardAccountDTO;
-import com.ironhack.bankingsystem.dto.account.MoneyTransferDTO;
-import com.ironhack.bankingsystem.dto.account.SavingsAccountDTO;
+import com.ironhack.bankingsystem.dto.account.*;
 import com.ironhack.bankingsystem.model.account.Account;
 import com.ironhack.bankingsystem.model.account.CheckingAccount;
 import com.ironhack.bankingsystem.model.account.CreditCardAccount;
@@ -27,7 +24,7 @@ public interface IAccountService {
 
     Transaction startMoneyTransfer(MoneyTransferDTO moneyTransferDTO, Long id);
 
-    Account updateBalance(NewBalanceDTO newBalanceDTO, Long id);
+    void updateBalance(NewBalanceDTO newBalanceDTO, Long id);
 
     void deleteAll();
 }

@@ -3,6 +3,7 @@ package com.ironhack.bankingsystem.controller.impl;
 import com.ironhack.bankingsystem.controller.interfaces.IAccountController;
 import com.ironhack.bankingsystem.dto.account.CheckingAccountDTO;
 import com.ironhack.bankingsystem.dto.account.CreditCardAccountDTO;
+import com.ironhack.bankingsystem.dto.account.NewBalanceDTO;
 import com.ironhack.bankingsystem.dto.account.SavingsAccountDTO;
 import com.ironhack.bankingsystem.model.account.Account;
 import com.ironhack.bankingsystem.model.account.CheckingAccount;
@@ -121,5 +122,17 @@ public class AccountController implements IAccountController {
             @Min(1)
             Long otherId) {
         return accountService.addCreditCard(creditCardAccountDTO, id, Optional.of(otherId));
+    }
+
+    @PatchMapping("/accounts/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateBalance(
+            @RequestBody
+            @Valid
+            NewBalanceDTO newBalanceDTO,
+            @PathVariable
+            @NumberFormat
+            Long id) {
+        accountService.updateBalance(newBalanceDTO, id);
     }
 }

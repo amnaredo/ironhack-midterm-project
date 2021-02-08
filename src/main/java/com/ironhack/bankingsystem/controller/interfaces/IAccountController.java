@@ -2,6 +2,7 @@ package com.ironhack.bankingsystem.controller.interfaces;
 
 import com.ironhack.bankingsystem.dto.account.CheckingAccountDTO;
 import com.ironhack.bankingsystem.dto.account.CreditCardAccountDTO;
+import com.ironhack.bankingsystem.dto.account.NewBalanceDTO;
 import com.ironhack.bankingsystem.dto.account.SavingsAccountDTO;
 import com.ironhack.bankingsystem.model.account.Account;
 import com.ironhack.bankingsystem.model.account.CheckingAccount;
@@ -22,4 +23,6 @@ public interface IAccountController {
 
     CreditCardAccount addCreditCard(CreditCardAccountDTO creditCardAccountDTO, Long ownerId);
     CreditCardAccount addCreditCard(CreditCardAccountDTO creditCardAccountDTO, Long ownerId, Long otherOwnerId);
+
+    void updateBalance(NewBalanceDTO newBalanceDTO, Long id);
 }
