@@ -1,7 +1,7 @@
 package com.ironhack.bankingsystem.service.impl;
 
-import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.Account;
+import com.ironhack.bankingsystem.model.account.interfaces.WithAnnualInterest;
 import com.ironhack.bankingsystem.model.account.interfaces.WithMonthlyFee;
 import com.ironhack.bankingsystem.model.account.interfaces.WithMonthlyInterest;
 import com.ironhack.bankingsystem.model.transaction.Transaction;
@@ -30,6 +30,9 @@ public class InterestsFeesService implements IInterestsFeesService {
         if(WithMonthlyInterest.class.isAssignableFrom(account.getClass()))
             applyMonthlyInterest((WithMonthlyInterest) account);
 
+        if(WithAnnualInterest.class.isAssignableFrom(account.getClass()))
+            applyAnnualInterest((WithAnnualInterest) account);
+
         return accountService.addAccount(account);
     }
 
@@ -38,12 +41,12 @@ public class InterestsFeesService implements IInterestsFeesService {
         if (account.getMonthsSinceLastInterestAdded() > 0) {
 
             // new transaction to reflect the payment of interests.
-            Transaction transaction = new Transaction(new Money(account.getLastInterestGenerated()));
+            Transaction transaction = new Transaction(account.getLastInterestGenerated());
             //transaction.setFromAccount(null);
             transaction.setToAccount((Account) account);
             transaction.setAuthorName("SantanderBank");
             String dateString = interestAddedDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-            transaction.setDescription(dateString + " Interests payment");
+            transaction.setDescription("Monthly interests generated since " + dateString);
             transactionService.addTransaction(transaction);
 
             // update account info
@@ -51,6 +54,23 @@ public class InterestsFeesService implements IInterestsFeesService {
         }
     }
 
+    public void applyAnnualInterest(WithAnnualInterest account) {
+        LocalDateTime interestAddedDateTime = account.getInterestAddedDateTime();
+        if (account.getYearsSinceLastInterestAdded() > 0) {
+
+            // new transaction to reflect the payment of interests.
+            Transaction transaction = new Transaction(account.getLastInterestGenerated());
+            //transaction.setFromAccount(null);
+            transaction.setToAccount((Account) account);
+            transaction.setAuthorName("SantanderBank");
+            String dateString = interestAddedDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            transaction.setDescription("Annual interests generated since " + dateString);
+            transactionService.addTransaction(transaction);
+
+            // update account info
+            account.updateInterestAddedDateTime();
+        }
+    }
 
     public void applyMonthlyFee(WithMonthlyFee account) {
         LocalDateTime feeAppliedDateTime = account.getMonthlyFeeAppliedDateTime();
@@ -62,7 +82,7 @@ public class InterestsFeesService implements IInterestsFeesService {
             //transaction.setToAccount(null);
             transaction.setAuthorName("SantanderBank");
             String dateString = feeAppliedDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-            transaction.setDescription(dateString + " Maintenance fee deduction");
+            transaction.setDescription("Maintenance fee deductions since " + dateString);
 
             transactionService.addTransaction(transaction);
 

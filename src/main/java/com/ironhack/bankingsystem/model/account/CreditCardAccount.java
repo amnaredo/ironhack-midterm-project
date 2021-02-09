@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -35,6 +36,7 @@ public class CreditCardAccount extends Account implements WithMonthlyInterest {
     private static final BigDecimal DEFAULT_INTEREST_RATE = BigDecimal.valueOf(VALID_MAX_INTEREST_RATE);
 
     private Money creditLimit;
+    @Column(precision = 19, scale = 4, columnDefinition="DECIMAL(19,4)")
     private BigDecimal interestRate;
 
     private LocalDateTime interestAddedDateTime;
@@ -96,17 +98,17 @@ public class CreditCardAccount extends Account implements WithMonthlyInterest {
         return interestAddedDateTime;
     }
 
-    public BigDecimal getLastInterestGenerated() {
+    public Money getLastInterestGenerated() {
         BigDecimal earnedInterests = BigDecimal.ZERO;
-        BigDecimal interest = getMonthlyInterest();
+        BigDecimal interest = getMonthlyInterestRate();
         for(int i=0; i<getMonthsSinceLastInterestAdded(); i++) {
             earnedInterests = earnedInterests.add((getBalance().getAmount()).multiply(interest));
         }
-        return earnedInterests;
+        return new Money(earnedInterests);
     }
 
-    public BigDecimal getMonthlyInterest() {
-        return getInterestRate();
+    public BigDecimal getMonthlyInterestRate() {
+        return getInterestRate().divide(BigDecimal.valueOf(12L), RoundingMode.HALF_EVEN);
     }
 
     public void updateInterestAddedDateTime() {

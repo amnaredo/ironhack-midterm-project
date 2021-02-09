@@ -2,7 +2,7 @@ package com.ironhack.bankingsystem.model.account;
 
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.enums.Type;
-import com.ironhack.bankingsystem.model.account.interfaces.WithMonthlyInterest;
+import com.ironhack.bankingsystem.model.account.interfaces.WithAnnualInterest;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
 
 import javax.persistence.*;
@@ -15,7 +15,7 @@ import java.time.temporal.ChronoUnit;
 @Entity
 //@Table(name = "savings_account")
 @PrimaryKeyJoinColumn(name = "id")
-public class SavingsAccount extends CheckingAccount implements WithMonthlyInterest {
+public class SavingsAccount extends CheckingAccount implements WithAnnualInterest {
 //    Checking Accounts should have:
 //
 //    A balance
@@ -37,10 +37,10 @@ public class SavingsAccount extends CheckingAccount implements WithMonthlyIntere
     private static final Double VALID_MIN_MINIMUM_BALANCE = 100.;
     private static final Double VALID_MAX_MINIMUM_BALANCE = 1000.;
 
-    private static final BigDecimal DEFAULT_INTEREST_RATE = BigDecimal.valueOf(0.0025);
+    private static final BigDecimal DEFAULT_INTEREST_RATE = new BigDecimal("0.0025");
     private static final Money DEFAULT_MINIMUM_BALANCE = new Money(BigDecimal.valueOf(VALID_MAX_MINIMUM_BALANCE));
 
-
+    @Column(precision = 19, scale = 4, columnDefinition="DECIMAL(19,4)")
     private BigDecimal interestRate;
 
     private LocalDateTime interestAddedDateTime;
@@ -88,17 +88,17 @@ public class SavingsAccount extends CheckingAccount implements WithMonthlyIntere
         return interestAddedDateTime;
     }
 
-    public BigDecimal getLastInterestGenerated() {
+    public Money getLastInterestGenerated() {
         BigDecimal earnedInterests = BigDecimal.ZERO;
-        BigDecimal interest = getMonthlyInterest();
-        for(int i=0; i<getMonthsSinceLastInterestAdded(); i++) {
+        BigDecimal interest = getAnnualInterestRate();
+        for(int i=0; i<getYearsSinceLastInterestAdded(); i++) {
             earnedInterests = earnedInterests.add((getBalance().getAmount()).multiply(interest));
         }
-        return earnedInterests;
+        return new Money(earnedInterests);
     }
 
-    public BigDecimal getMonthlyInterest() {
-        return getInterestRate().divide(BigDecimal.valueOf(12L));
+    public BigDecimal getAnnualInterestRate() {
+        return getInterestRate();
     }
 
     public void updateInterestAddedDateTime() {
@@ -109,9 +109,9 @@ public class SavingsAccount extends CheckingAccount implements WithMonthlyIntere
         this.interestAddedDateTime = interestAddedDateTime;
     }
 
-    public Integer getMonthsSinceLastInterestAdded() {
-        long months = ChronoUnit.MONTHS.between(getInterestAddedDateTime(), LocalDateTime.now());
-        return (int) months;
+    public Integer getYearsSinceLastInterestAdded() {
+        long years = ChronoUnit.YEARS.between(getInterestAddedDateTime(), LocalDateTime.now());
+        return (int) years;
     }
 
     public void updateMonthlyFeeAppliedDateTime() {
