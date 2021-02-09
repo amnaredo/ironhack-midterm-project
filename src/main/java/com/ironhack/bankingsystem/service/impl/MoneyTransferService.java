@@ -64,7 +64,7 @@ public class MoneyTransferService implements IMoneyTransferService {
             //deductionTransaction.setToAccount(null);
             //deductionTransaction.setAmount(origin.getPenaltyFee()); // set amount before accounts
             deductionTransaction.setAuthorName(moneyTransferDTO.getName());
-            deductionTransaction.setDescription("Penalty fee deducted :)");
+            deductionTransaction.setDescription("Penalty fee deduction");
 
             transactionService.addTransaction(deductionTransaction);
         }

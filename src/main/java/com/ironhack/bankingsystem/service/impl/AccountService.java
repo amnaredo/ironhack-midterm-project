@@ -59,6 +59,11 @@ public class AccountService implements IAccountService {
         // access the account
         Account account = accountRepository.findById(id).get();
 
+
+        // todo security checks (maybe at the controller...)
+        //      -> the logged user owns the account id?
+
+
         // apply interests/fees
         interestsFeesService.applyInterestsFeesService(account);
 
@@ -155,9 +160,6 @@ public class AccountService implements IAccountService {
     }
 
     public Transaction startMoneyTransfer(MoneyTransferDTO moneyTransferDTO, Long id) {
-
-        // todo security checks (maybe at the controller...)
-        //      -> the logged user owns the account id?
 
         // check the existence of the referenced accounts
         if(!existsAccount(id))

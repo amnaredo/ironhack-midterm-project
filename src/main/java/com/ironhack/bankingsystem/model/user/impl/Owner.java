@@ -9,7 +9,6 @@ import com.ironhack.bankingsystem.model.user.interfaces.IOwner;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -45,6 +44,14 @@ public abstract class Owner implements IOwner, Serializable {
         this.name = name;
     }
 
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -91,6 +98,4 @@ public abstract class Owner implements IOwner, Serializable {
         secondaryAccounts.add(account);
         account.setSecondaryOwner(this);
     }
-
-
 }
