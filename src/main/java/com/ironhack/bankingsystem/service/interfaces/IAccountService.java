@@ -22,9 +22,11 @@ public interface IAccountService {
     SavingsAccount addSavings(SavingsAccountDTO savingsAccountDTO, Long id, Optional<Long> otherId);
     CreditCardAccount addCreditCard(CreditCardAccountDTO creditCardAccountDTO, Long id, Optional<Long> otherId);
 
-    Transaction startMoneyTransfer(MoneyTransferDTO moneyTransferDTO, Long id);
+    Account startMoneyTransfer(MoneyTransferDTO moneyTransferDTO, Long id);
 
     void updateBalance(NewBalanceDTO newBalanceDTO, Long id);
+
+    Account saveAccount(Account account);
 
     void deleteAll();
 }

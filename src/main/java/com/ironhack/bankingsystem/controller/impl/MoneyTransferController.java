@@ -29,7 +29,7 @@ public class MoneyTransferController implements IMoneyTransferController {
 
     @PostMapping("/accounts/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Transaction transferMoney(@RequestBody @Valid MoneyTransferDTO moneyTransferDTO, @PathVariable @NumberFormat @Min(1) Long id) {
-        return moneyTransferService.doMoneyTransfer(moneyTransferDTO, id);
+    public Account transferMoney(@RequestBody @Valid MoneyTransferDTO moneyTransferDTO, @PathVariable @NumberFormat @Min(1) Long id) {
+        return accountService.startMoneyTransfer(moneyTransferDTO, id);
     }
 }

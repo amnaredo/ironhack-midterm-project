@@ -79,5 +79,7 @@ class TransactionServiceTest {
         Transaction transaction = new Transaction(fromAccount, toAccount, new Money(BigDecimal.valueOf(5L)), "Alejandro", "Hola amigo");
         transactionService.addTransaction(transaction);
         assertEquals(2, transactionService.getTransactions().size());
+        assertEquals(5, fromAccount.getBalance().getAmount().intValue());
+        assertEquals(6, toAccount.getBalance().getAmount().intValue());
     }
 }

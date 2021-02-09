@@ -6,5 +6,5 @@ import com.ironhack.bankingsystem.model.transaction.Transaction;
 
 public interface IMoneyTransferController {
     Account getAccount(Long id);
-    Transaction transferMoney(MoneyTransferDTO moneyTransferDTO, Long id);
+    Account transferMoney(MoneyTransferDTO moneyTransferDTO, Long id);
 }

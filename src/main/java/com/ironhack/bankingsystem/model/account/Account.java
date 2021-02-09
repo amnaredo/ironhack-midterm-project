@@ -91,6 +91,14 @@ public abstract class Account implements Serializable {
     }
 
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Money getBalance() {
         return balance;
     }
@@ -176,6 +184,9 @@ public abstract class Account implements Serializable {
             return;
         depositTxs.add(transaction);
         transaction.setToAccount(this);
+
+        // increase money
+        getBalance().increaseAmount(transaction.getAmount());
     }
 
     public void addWithdrawalTransaction(Transaction transaction) {
@@ -183,6 +194,9 @@ public abstract class Account implements Serializable {
             return;
         withdrawalTxs.add(transaction);
         transaction.setFromAccount(this);
+
+        // decrease money
+        getBalance().decreaseAmount(transaction.getAmount());
     }
 
     public abstract Money getMinimumBalance();

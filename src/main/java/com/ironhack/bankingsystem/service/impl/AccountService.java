@@ -3,7 +3,6 @@ package com.ironhack.bankingsystem.service.impl;
 import com.ironhack.bankingsystem.dto.account.*;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.*;
-import com.ironhack.bankingsystem.model.transaction.Transaction;
 import com.ironhack.bankingsystem.model.user.enums.Type;
 import com.ironhack.bankingsystem.model.user.impl.AccountHolder;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
@@ -15,8 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -70,7 +67,7 @@ public class AccountService implements IAccountService {
         // update last access date time
         account.updateLastAccessDateTime();
 
-        return addAccount(account);
+        return saveAccount(account);
     }
 
     public Account addAccount(Account account) {
@@ -94,14 +91,15 @@ public class AccountService implements IAccountService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id not valid");
 
         Owner owner = ownerService.getOwnerById(id).get();
-        Owner otherOwner = otherId.isPresent() ? ownerService.getOwnerById(otherId.get()).get() : null;
+        Owner otherOwner =
+                otherId.isPresent() ? ownerService.getOwnerById(otherId.get()).get() : null;
 
         if (owner.getType().equals(Type.ACCOUNT_HOLDER)) {
 
             // When creating a new Checking account, if the primaryOwner is less than 24,
             // a StudentChecking account should be created otherwise a regular Checking Account should be created.
 
-            AccountHolder accountHolder = (AccountHolder) owner; // ?????????? accountholderRepo?
+            AccountHolder accountHolder = (AccountHolder) owner;
             LocalDate now = LocalDate.now();
 
             if (ChronoUnit.YEARS.between(accountHolder.getDateOfBirth(), now) < 24) {
@@ -135,7 +133,7 @@ public class AccountService implements IAccountService {
         savingsAccount.setPrimaryOwner(owner);
         savingsAccount.setSecondaryOwner(otherOwner);
         savingsAccount.setBalance(new Money(savingsAccountDTO.getBalance()));
-        savingsAccount.setSecretKey(savingsAccount.getSecretKey());
+        savingsAccount.setSecretKey(savingsAccountDTO.getSecretKey());
         savingsAccount.setInterestRate(savingsAccountDTO.getInterestRate());
         savingsAccount.setMinimumBalance(new Money(savingsAccountDTO.getMinBalance()));
 
@@ -159,7 +157,7 @@ public class AccountService implements IAccountService {
         return saveCreditCardAccount(creditCardAccount);
     }
 
-    public Transaction startMoneyTransfer(MoneyTransferDTO moneyTransferDTO, Long id) {
+    public Account startMoneyTransfer(MoneyTransferDTO moneyTransferDTO, Long id) {
 
         // check the existence of the referenced accounts
         if(!existsAccount(id))
@@ -178,7 +176,9 @@ public class AccountService implements IAccountService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name provided does not match with the account owner");
 
         // everything ok, next checks are MoneyTransferService responsibility
-        return moneyTransferService.doMoneyTransfer(moneyTransferDTO, id);
+        account = moneyTransferService.doMoneyTransfer(moneyTransferDTO, id);
+
+        return saveAccount(account);
     }
 
     public void updateBalance(NewBalanceDTO newBalanceDTO, Long id) {
@@ -188,7 +188,7 @@ public class AccountService implements IAccountService {
         Account account = getAccountById(id);
         account.setBalance(new Money(newBalanceDTO.getBalance()));
 
-        addAccount(account);
+        saveAccount(account);
     }
 
     private CheckingAccount saveCheckingAccount(CheckingAccount account) {
@@ -205,6 +205,10 @@ public class AccountService implements IAccountService {
 
     private CreditCardAccount saveCreditCardAccount(CreditCardAccount account) {
         return creditCardAccountRepository.save(account);
+    }
+
+    public Account saveAccount(Account account) {
+        return accountRepository.saveAndFlush(account);
     }
 
     public void deleteAll(){

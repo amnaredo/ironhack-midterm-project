@@ -63,14 +63,14 @@ public class Transaction {
     }
 
     public void setFromAccount(Account fromAccount) {
-        if (fromAccount == null)
+        if (fromAccount == null || fromAccount == this.fromAccount) {
+            System.out.println("oooops, se jode AAAAAAA " + amount);
             return;
+        }
+        System.out.println("HolaAA ");
 
         this.fromAccount = fromAccount;
         fromAccount.addWithdrawalTransaction(this);
-
-        // decrease money
-        fromAccount.getBalance().decreaseAmount(this.amount);
     }
 
     public Account getToAccount() {
@@ -78,14 +78,13 @@ public class Transaction {
     }
 
     public void setToAccount(Account toAccount) {
-        if (toAccount == null)
+        if (toAccount == null || toAccount == this.toAccount) {
+            System.out.println("oooops, se jode BBBBBBB " + amount);
             return;
-
+        }
+        System.out.println("HolaBB ");
         this.toAccount = toAccount;
         toAccount.addDepositTransaction(this);
-
-        // increase money
-        toAccount.getBalance().increaseAmount(this.amount);
     }
 
     public LocalDateTime getTimestamp() {

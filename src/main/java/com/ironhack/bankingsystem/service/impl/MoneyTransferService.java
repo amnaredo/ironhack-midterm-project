@@ -3,7 +3,6 @@ package com.ironhack.bankingsystem.service.impl;
 import com.ironhack.bankingsystem.dto.account.MoneyTransferDTO;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.Account;
-import com.ironhack.bankingsystem.model.account.enums.Type;
 import com.ironhack.bankingsystem.model.transaction.Transaction;
 import com.ironhack.bankingsystem.service.interfaces.IAccountService;
 import com.ironhack.bankingsystem.service.interfaces.IMoneyTransferService;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Service
 public class MoneyTransferService implements IMoneyTransferService {
@@ -26,7 +24,7 @@ public class MoneyTransferService implements IMoneyTransferService {
     @Autowired
     private ITransactionService transactionService;
 
-    public Transaction doMoneyTransfer(MoneyTransferDTO moneyTransferDTO, Long id) {
+    public Account doMoneyTransfer(MoneyTransferDTO moneyTransferDTO, Long id) {
 
         Account origin = accountService.getAccountById(id);
         Account destination = accountService.getAccountById(moneyTransferDTO.getToAccountId());
@@ -50,7 +48,6 @@ public class MoneyTransferService implements IMoneyTransferService {
         //transaction.setAmount(new Money(transferAmount));
         transaction.setAuthorName(moneyTransferDTO.getName());
         transaction.setDescription(moneyTransferDTO.getDescription());
-
         Transaction newTransaction = transactionService.addTransaction(transaction);
 
         // deduct penalty fee with another transaction if needed
@@ -65,10 +62,9 @@ public class MoneyTransferService implements IMoneyTransferService {
             //deductionTransaction.setAmount(origin.getPenaltyFee()); // set amount before accounts
             deductionTransaction.setAuthorName(moneyTransferDTO.getName());
             deductionTransaction.setDescription("Penalty fee deduction");
-
             transactionService.addTransaction(deductionTransaction);
         }
 
-        return newTransaction;
+        return accountService.saveAccount(origin);
     }
 }

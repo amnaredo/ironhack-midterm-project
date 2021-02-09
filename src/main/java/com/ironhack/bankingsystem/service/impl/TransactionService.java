@@ -13,13 +13,23 @@ public class TransactionService implements ITransactionService {
 
     @Autowired
     private TransactionRepository transactionRepository;
+    @Autowired
+    private AccountService accountService;
 
     public List<Transaction> getTransactions() {
         return transactionRepository.findAll();
     }
 
     public Transaction addTransaction(Transaction transaction) {
-        return transactionRepository.save(transaction);
+
+        Transaction newTransaction = transactionRepository.saveAndFlush(transaction);
+
+        if (transaction.getFromAccount() != null)
+            accountService.saveAccount(transaction.getFromAccount());
+        if (transaction.getToAccount() != null)
+            accountService.saveAccount(transaction.getToAccount());
+
+        return newTransaction;
     }
 
     public void deleteAll() {
