@@ -2,20 +2,20 @@ package com.ironhack.bankingsystem.model.account;
 
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.enums.Type;
+import com.ironhack.bankingsystem.model.account.interfaces.WithMonthlyInterest;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
 
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Entity
 //@Table(name = "savings_account")
 @PrimaryKeyJoinColumn(name = "id")
-public class SavingsAccount extends CheckingAccount {
+public class SavingsAccount extends CheckingAccount implements WithMonthlyInterest {
 //    Checking Accounts should have:
 //
 //    A balance
@@ -44,23 +44,20 @@ public class SavingsAccount extends CheckingAccount {
     private BigDecimal interestRate;
 
     private LocalDateTime interestAddedDateTime;
-    private BigDecimal lastInterestGenerated;
 
 
     public SavingsAccount() {
         this.setType(Type.SAVINGS);
-        this.interestAddedDateTime = getCreationDateTime();
-        this.lastInterestGenerated = BigDecimal.ZERO;
+        setInterestAddedDateTime(getCreationDateTime());
     }
 
     public SavingsAccount(Owner owner, Money balance, String secretKey) {
         super(owner, balance, secretKey);
         setMonthlyMaintenanceFee(new Money(BigDecimal.ZERO));
         setMinimumBalance(DEFAULT_MINIMUM_BALANCE);
-        this.interestRate = DEFAULT_INTEREST_RATE;
-        this.setType(Type.SAVINGS);
-        this.interestAddedDateTime = getCreationDateTime();
-        this.lastInterestGenerated = BigDecimal.ZERO;
+        setInterestRate(DEFAULT_INTEREST_RATE);
+        setType(Type.SAVINGS);
+        setInterestAddedDateTime(getCreationDateTime());
     }
 
     public SavingsAccount(Owner owner, Money balance, String secretKey,
@@ -73,10 +70,9 @@ public class SavingsAccount extends CheckingAccount {
         super(owner, balance, secretKey);
         setMonthlyMaintenanceFee(new Money(BigDecimal.ZERO));
         setMinimumBalance(new Money(BigDecimal.valueOf(minimumBalance)));
-        this.interestRate = BigDecimal.valueOf(interestRate);
-        this.setType(Type.SAVINGS);
-        this.interestAddedDateTime = getCreationDateTime();
-        this.lastInterestGenerated = BigDecimal.ZERO;
+        setInterestRate(BigDecimal.valueOf(interestRate));
+        setType(Type.SAVINGS);
+        setInterestAddedDateTime(getCreationDateTime());
     }
 
 
@@ -92,17 +88,36 @@ public class SavingsAccount extends CheckingAccount {
         return interestAddedDateTime;
     }
 
+    public BigDecimal getLastInterestGenerated() {
+        BigDecimal earnedInterests = BigDecimal.ZERO;
+        BigDecimal interest = getMonthlyInterest();
+        for(int i=0; i<getMonthsSinceLastInterestAdded(); i++) {
+            earnedInterests = earnedInterests.add((getBalance().getAmount()).multiply(interest));
+        }
+        return earnedInterests;
+    }
+
+    public BigDecimal getMonthlyInterest() {
+        return getInterestRate().divide(BigDecimal.valueOf(12L));
+    }
+
+    public void updateInterestAddedDateTime() {
+        setInterestAddedDateTime(LocalDateTime.now());
+    }
+
     public void setInterestAddedDateTime(LocalDateTime interestAddedDateTime) {
         this.interestAddedDateTime = interestAddedDateTime;
     }
 
-    public BigDecimal getLastInterestGenerated() {
-        return lastInterestGenerated;
+    public Integer getMonthsSinceLastInterestAdded() {
+        long months = ChronoUnit.MONTHS.between(getInterestAddedDateTime(), LocalDateTime.now());
+        return (int) months;
     }
 
-    public void setLastInterestGenerated(BigDecimal lastInterestGenerated) {
-        this.lastInterestGenerated = lastInterestGenerated;
+    public void updateMonthlyFeeAppliedDateTime() {
+        setMonthlyFeeAppliedDateTime(LocalDateTime.now());
     }
+
 
     //    Interest on savings accounts is added to the account annually at the rate of specified interestRate per year.
     //    That means that if I have 1000000 in a savings account with a 0.01 interest rate,
@@ -110,24 +125,5 @@ public class SavingsAccount extends CheckingAccount {
     //    When a savings Account balance is accessed, you must determine if it has been 1 year or more since the either
     //    the account was created or since interest was added to the account, and add the appropriate
     //    interest to the balance if necessary.
-
-    public Boolean updateLastAccessDateTime() {
-        setLastAccessDateTime(LocalDateTime.now());
-
-        Boolean interestWasAdded = false;
-        BigDecimal interestAccumulated = BigDecimal.ZERO;
-
-        Long years = ChronoUnit.YEARS.between(getInterestAddedDateTime(), getLastAccessDateTime());
-        for(int i=0; i<years.intValue(); i++) {
-            interestWasAdded = true;
-            interestAccumulated = interestAccumulated.add((getBalance().getAmount()).multiply(getInterestRate()));
-        }
-        if (interestWasAdded) {
-            //getBalance().increaseAmount(interestAccumulated);
-            setInterestAddedDateTime(LocalDateTime.now());
-            setLastInterestGenerated(interestAccumulated);
-        }
-        return interestWasAdded;
-    }
 
 }

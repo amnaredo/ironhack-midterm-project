@@ -2,20 +2,20 @@ package com.ironhack.bankingsystem.model.account;
 
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.enums.Type;
+import com.ironhack.bankingsystem.model.account.interfaces.WithMonthlyInterest;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
 
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Entity
 //@Table(name = "credit_card_account")
 @PrimaryKeyJoinColumn(name = "id")
-public class CreditCardAccount extends Account {
+public class CreditCardAccount extends Account implements WithMonthlyInterest {
 
 //    CreditCard Accounts have:
 //
@@ -37,24 +37,22 @@ public class CreditCardAccount extends Account {
     private Money creditLimit;
     private BigDecimal interestRate;
 
-
     private LocalDateTime interestAddedDateTime;
-    private BigDecimal lastInterestGenerated;
 
 
     public CreditCardAccount() {
         this.setType(Type.CREDIT_CARD);
-        this.interestAddedDateTime = getCreationDateTime();
-        this.lastInterestGenerated = BigDecimal.ZERO;
+        setCreditLimit(DEFAULT_CREDIT_LIMIT);  // CreditCard accounts have a default creditLimit of 100
+        setInterestRate(DEFAULT_INTEREST_RATE);// CreditCards have a default interestRate of 0.2
+        setInterestAddedDateTime(getCreationDateTime());
     }
 
     public CreditCardAccount(Owner owner, Money balance) {
         super(owner, balance);
-        this.creditLimit = DEFAULT_CREDIT_LIMIT;  // CreditCard accounts have a default creditLimit of 100
-        this.interestRate = DEFAULT_INTEREST_RATE;// CreditCards have a default interestRate of 0.2
-        this.setType(Type.CREDIT_CARD);
-        this.interestAddedDateTime = getCreationDateTime();
-        this.lastInterestGenerated = BigDecimal.ZERO;
+        setCreditLimit(DEFAULT_CREDIT_LIMIT);  // CreditCard accounts have a default creditLimit of 100
+        setInterestRate(DEFAULT_INTEREST_RATE);// CreditCards have a default interestRate of 0.2
+        setType(Type.CREDIT_CARD);
+        setInterestAddedDateTime(getCreationDateTime());
     }
 
     // CreditCards may be instantiated with a creditLimit higher than 100 but not higher than 100000
@@ -67,11 +65,10 @@ public class CreditCardAccount extends Account {
                              @DecimalMax(value = "0.2", message = "Interest rate must be lesser than 0.2")
                              Double interestRate) {
         super(owner, balance);
-        this.creditLimit = new Money(BigDecimal.valueOf(creditLimit));
-        this.interestRate = BigDecimal.valueOf(interestRate);
-        this.setType(Type.CREDIT_CARD);
-        this.interestAddedDateTime = getCreationDateTime();
-        this.lastInterestGenerated = BigDecimal.ZERO;
+        setCreditLimit(new Money(BigDecimal.valueOf(creditLimit)));
+        setInterestRate(BigDecimal.valueOf(interestRate));
+        setType(Type.CREDIT_CARD);
+        setInterestAddedDateTime(getCreationDateTime());
     }
 
 
@@ -99,8 +96,30 @@ public class CreditCardAccount extends Account {
         return interestAddedDateTime;
     }
 
+    public BigDecimal getLastInterestGenerated() {
+        BigDecimal earnedInterests = BigDecimal.ZERO;
+        BigDecimal interest = getMonthlyInterest();
+        for(int i=0; i<getMonthsSinceLastInterestAdded(); i++) {
+            earnedInterests = earnedInterests.add((getBalance().getAmount()).multiply(interest));
+        }
+        return earnedInterests;
+    }
+
+    public BigDecimal getMonthlyInterest() {
+        return getInterestRate();
+    }
+
+    public void updateInterestAddedDateTime() {
+        setInterestAddedDateTime(LocalDateTime.now());
+    }
+
     public void setInterestAddedDateTime(LocalDateTime interestAddedDateTime) {
         this.interestAddedDateTime = interestAddedDateTime;
+    }
+
+    public Integer getMonthsSinceLastInterestAdded() {
+        long months = ChronoUnit.MONTHS.between(getInterestAddedDateTime(), LocalDateTime.now());
+        return (int) months;
     }
 
     //    Interest on credit cards is added to the balance monthly.
@@ -108,30 +127,4 @@ public class CreditCardAccount extends Account {
     //    When the balance of a credit card is accessed, check to determine if it has been 1 month or more since
     //    the account was created or since interested was added, and if so, add the appropriate interest to the balance.
 
-    public Boolean updateLastAccessDateTime() {
-        setLastAccessDateTime(LocalDateTime.now());
-
-        Boolean interestWasAdded = false;
-        BigDecimal interestAccumulated = BigDecimal.ZERO;
-        BigDecimal monthlyInterestRate = getInterestRate().divide(BigDecimal.valueOf(12L), RoundingMode.HALF_EVEN);
-        Long months = ChronoUnit.MONTHS.between(getInterestAddedDateTime(), getLastAccessDateTime());
-        for(int i=0; i<months.intValue(); i++) {
-            interestWasAdded = true;
-            interestAccumulated = interestAccumulated.add((getBalance().getAmount()).multiply(monthlyInterestRate));
-        }
-        if (interestWasAdded) {
-            //getBalance().increaseAmount(interestAccumulated);
-            setInterestAddedDateTime(LocalDateTime.now());
-            setLastInterestGenerated(interestAccumulated);
-        }
-        return interestWasAdded;
-    }
-
-    public void setLastInterestGenerated(BigDecimal lastInterestGenerated) {
-        this.lastInterestGenerated = lastInterestGenerated;
-    }
-
-    public BigDecimal getLastInterestGenerated() {
-        return this.lastInterestGenerated;
-    }
 }

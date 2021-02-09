@@ -61,38 +61,37 @@ public abstract class Account implements Serializable {
 
 
     public Account() {
-        this.creationDateTime = LocalDateTime.now();
-        this.balance = new Money(BigDecimal.ZERO);
+        setBalance(new Money(BigDecimal.ZERO));
 
-        this.depositTxs = new ArrayList<>();
-        this.withdrawalTxs = new ArrayList<>();
+        setCreationDateTime(LocalDateTime.now());
+        setLastAccessDateTime(getCreationDateTime());
+
+        setDepositTxs(new ArrayList<>());
+        setWithdrawalTxs(new ArrayList<>());
     }
 
     public Account(Owner primaryOwner) {
         this();
-        //this.primaryOwner = primaryOwner;
         setPrimaryOwner(primaryOwner);
     }
 
     public Account(Owner primaryOwner, Owner secondaryOwner) {
         this(primaryOwner);
-        //this.secondaryOwner = secondaryOwner;
         setSecondaryOwner(secondaryOwner);
     }
 
     public Account(Owner primaryOwner, Money balance) {
         this(primaryOwner);
-        this.balance = balance;
+        setBalance(balance);
     }
 
     public Account(Owner primaryOwner, Owner secondaryOwner, Money balance) {
         this(primaryOwner, secondaryOwner);
-        this.balance = balance;
+        setBalance(balance);
     }
 
 
     public Money getBalance() {
-        //setLastAccessDateTime(LocalDateTime.now());
         return balance;
     }
 
@@ -188,7 +187,7 @@ public abstract class Account implements Serializable {
 
     public abstract Money getMinimumBalance();
 
-    public abstract Boolean updateLastAccessDateTime();
-    public abstract BigDecimal getLastInterestGenerated();
-    public abstract LocalDateTime getInterestAddedDateTime();
+    public void updateLastAccessDateTime() {
+        setLastAccessDateTime(LocalDateTime.now());
+    }
 }

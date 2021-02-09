@@ -8,10 +8,7 @@ import com.ironhack.bankingsystem.model.user.enums.Type;
 import com.ironhack.bankingsystem.model.user.impl.AccountHolder;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
 import com.ironhack.bankingsystem.repository.account.*;
-import com.ironhack.bankingsystem.service.interfaces.IAccountService;
-import com.ironhack.bankingsystem.service.interfaces.IMoneyTransferService;
-import com.ironhack.bankingsystem.service.interfaces.IOwnerService;
-import com.ironhack.bankingsystem.service.interfaces.ITransactionService;
+import com.ironhack.bankingsystem.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -33,6 +30,8 @@ public class AccountService implements IAccountService {
     private IMoneyTransferService moneyTransferService;
     @Autowired
     private ITransactionService transactionService;
+    @Autowired
+    private IInterestsFeesService interestsFeesService;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -57,23 +56,16 @@ public class AccountService implements IAccountService {
         if(!accountRepository.existsById(id))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
 
+        // access the account
         Account account = accountRepository.findById(id).get();
-        LocalDateTime interestAddedDateTime = account.getInterestAddedDateTime();
-        LocalDateTime lastAccessDateTime = account.getLastAccessDateTime();
-        if (account.updateLastAccessDateTime()) {
-            Transaction transaction = new Transaction(new Money(account.getLastInterestGenerated()));
-            //transaction.setFromAccount(null);
-            transaction.setToAccount(account);
-            transaction.setAuthorName("SantanderBank");
-            transaction.setDescription("Earned interests since " + interestAddedDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
-            transactionService.addTransaction(transaction);
-            account = addAccount(account);
-        }
+        // apply interests/fees
+        interestsFeesService.applyInterestsFeesService(account);
 
-        // this is for the owner to see the last access time
-        account.setLastAccessDateTime(lastAccessDateTime);
-        return account;
+        // update last access date time
+        account.updateLastAccessDateTime();
+
+        return addAccount(account);
     }
 
     public Account addAccount(Account account) {

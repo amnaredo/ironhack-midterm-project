@@ -3,17 +3,19 @@ package com.ironhack.bankingsystem.model.account;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.enums.Status;
 import com.ironhack.bankingsystem.model.account.enums.Type;
+import com.ironhack.bankingsystem.model.account.interfaces.WithMonthlyFee;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 //@Table(name = "checking_account")
 @PrimaryKeyJoinColumn(name = "id")
-public class CheckingAccount extends Account {
+public class CheckingAccount extends Account implements WithMonthlyFee {
 //    Checking Accounts should have:
 //
 //    A balance
@@ -47,12 +49,15 @@ public class CheckingAccount extends Account {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    private LocalDateTime monthlyFeeAppliedDateTime;
+
 
     public CheckingAccount() {
-        this.minimumBalance = MINIMUM_BALANCE;
-        this.monthlyMaintenanceFee = MONTHLY_MAINTENANCE_FEE;
-        this.status = Status.ACTIVE;
-        this.setType(Type.CHECKING);
+        setMinimumBalance(MINIMUM_BALANCE);
+        setMonthlyMaintenanceFee(MONTHLY_MAINTENANCE_FEE);
+        setStatus(Status.ACTIVE);
+        setType(Type.CHECKING);
+        setMonthlyFeeAppliedDateTime(getCreationDateTime());
     }
 
     // Checking accounts should have a minimumBalance of 250 and a monthlyMaintenanceFee of 12
@@ -60,12 +65,14 @@ public class CheckingAccount extends Account {
                            @Pattern(regexp = "^[0-9]{4,8}$")
                            String secretKey) {
         super(owner, balance);
-        this.secretKey = secretKey;
-        this.minimumBalance = MINIMUM_BALANCE;
-        this.monthlyMaintenanceFee = MONTHLY_MAINTENANCE_FEE;
-        this.status = Status.ACTIVE;
-        this.setType(Type.CHECKING);
+        setSecretKey(secretKey);
+        setMinimumBalance(MINIMUM_BALANCE);
+        setMonthlyMaintenanceFee(MONTHLY_MAINTENANCE_FEE);
+        setStatus(Status.ACTIVE);
+        setType(Type.CHECKING);
+        setMonthlyFeeAppliedDateTime(getCreationDateTime());
     }
+
 
     public String getSecretKey() {
         return secretKey;
@@ -77,19 +84,6 @@ public class CheckingAccount extends Account {
 
     public Money getMinimumBalance() {
         return minimumBalance;
-    }
-
-    public Boolean updateLastAccessDateTime() {
-        setLastAccessDateTime(LocalDateTime.now());
-        return false;
-    }
-
-    public BigDecimal getLastInterestGenerated() {
-        return BigDecimal.ZERO;
-    }
-
-    public LocalDateTime getInterestAddedDateTime() {
-        return getLastAccessDateTime();
     }
 
     public void setMinimumBalance(Money minimumBalance) {
@@ -110,5 +104,22 @@ public class CheckingAccount extends Account {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public LocalDateTime getMonthlyFeeAppliedDateTime() {
+        return monthlyFeeAppliedDateTime;
+    }
+
+    public void updateMonthlyFeeAppliedDateTime() {
+        setMonthlyFeeAppliedDateTime(LocalDateTime.now());
+    }
+
+    public void setMonthlyFeeAppliedDateTime(LocalDateTime monthlyFeeAppliedDateTime) {
+        this.monthlyFeeAppliedDateTime = monthlyFeeAppliedDateTime;
+    }
+
+    public Integer getMonthsSinceLastMonthlyFeeDeduction() {
+        long months = ChronoUnit.MONTHS.between(getMonthlyFeeAppliedDateTime(), LocalDateTime.now());
+        return (int) months;
     }
 }

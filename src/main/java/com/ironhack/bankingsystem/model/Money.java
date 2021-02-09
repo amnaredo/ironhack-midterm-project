@@ -40,10 +40,10 @@ public class Money {
     }
 
     /**
-     * Class constructor specifying amount. Uses default RoundingMode HALF_EVEN and default currency USD.
+     * Class constructor specifying amount. Uses default RoundingMode HALF_EVEN and default currency EUR.
      **/
     public Money(BigDecimal amount) {
-        this(amount, USD, DEFAULT_ROUNDING);
+        this(amount, EUR, DEFAULT_ROUNDING);
     }
 
     public BigDecimal increaseAmount(Money money) {
