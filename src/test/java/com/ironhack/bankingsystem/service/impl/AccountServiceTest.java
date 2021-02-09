@@ -1,9 +1,6 @@
 package com.ironhack.bankingsystem.service.impl;
 
-import com.ironhack.bankingsystem.dto.account.CheckingAccountDTO;
-import com.ironhack.bankingsystem.dto.account.CreditCardAccountDTO;
-import com.ironhack.bankingsystem.dto.account.MoneyTransferDTO;
-import com.ironhack.bankingsystem.dto.account.SavingsAccountDTO;
+import com.ironhack.bankingsystem.dto.account.*;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.*;
 import com.ironhack.bankingsystem.model.user.Address;
@@ -19,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -212,11 +210,16 @@ class AccountServiceTest {
         destination = accountRepository.findByPrimaryOwner(ownerService.getOwners().get(0)).get(1);
 
         BigDecimal diff = destination.getBalance().getAmount().subtract(origin.getBalance().getAmount()).abs();
-        assertEquals(amount.multiply(BigDecimal.valueOf(2L)).setScale(2), diff);
-
+        assertEquals(amount.multiply(BigDecimal.valueOf(2L)).setScale(2, RoundingMode.HALF_EVEN), diff);
    }
 
     @Test
     void updateBalance() {
+        NewBalanceDTO newBalanceDTO = new NewBalanceDTO();
+        newBalanceDTO.setBalance(BigDecimal.valueOf(12345.67));
+
+        accountService.updateBalance(newBalanceDTO, accountService.getAccounts().get(0).getId());
+        assertEquals(BigDecimal.valueOf(12345.67), accountService.getAccounts().get(0).getBalance().getAmount());
+
     }
 }

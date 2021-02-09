@@ -63,11 +63,8 @@ public class Transaction {
     }
 
     public void setFromAccount(Account fromAccount) {
-        if (fromAccount == null || fromAccount == this.fromAccount) {
-            System.out.println("oooops, se jode AAAAAAA " + amount);
+        if (fromAccount == null || fromAccount == this.fromAccount)
             return;
-        }
-        System.out.println("HolaAA ");
 
         this.fromAccount = fromAccount;
         fromAccount.addWithdrawalTransaction(this);
@@ -78,11 +75,9 @@ public class Transaction {
     }
 
     public void setToAccount(Account toAccount) {
-        if (toAccount == null || toAccount == this.toAccount) {
-            System.out.println("oooops, se jode BBBBBBB " + amount);
+        if (toAccount == null || toAccount == this.toAccount)
             return;
-        }
-        System.out.println("HolaBB ");
+
         this.toAccount = toAccount;
         toAccount.addDepositTransaction(this);
     }
