@@ -3,6 +3,7 @@ package com.ironhack.bankingsystem.model.transaction;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.Account;
+import com.ironhack.bankingsystem.model.transaction.enums.Type;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -31,6 +32,9 @@ public class Transaction {
 
     @Embedded
     private Money amount;
+
+    @Enumerated(EnumType.STRING)
+    private Type type;
 
 
     public Transaction() {
@@ -112,5 +116,13 @@ public class Transaction {
 
     public void setAmount(Money amount) {
         this.amount = amount;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 }

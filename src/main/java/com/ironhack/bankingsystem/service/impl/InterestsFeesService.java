@@ -5,6 +5,7 @@ import com.ironhack.bankingsystem.model.account.interfaces.WithAnnualInterest;
 import com.ironhack.bankingsystem.model.account.interfaces.WithMonthlyFee;
 import com.ironhack.bankingsystem.model.account.interfaces.WithMonthlyInterest;
 import com.ironhack.bankingsystem.model.transaction.Transaction;
+import com.ironhack.bankingsystem.model.transaction.enums.Type;
 import com.ironhack.bankingsystem.service.interfaces.IAccountService;
 import com.ironhack.bankingsystem.service.interfaces.IInterestsFeesService;
 import com.ironhack.bankingsystem.service.interfaces.ITransactionService;
@@ -42,6 +43,7 @@ public class InterestsFeesService implements IInterestsFeesService {
 
             // new transaction to reflect the payment of interests.
             Transaction transaction = new Transaction(account.getLastInterestGenerated());
+            transaction.setType(Type.MONTHLY_INTERESTS);
             //transaction.setFromAccount(null);
             transaction.setToAccount((Account) account);
             transaction.setAuthorName("SantanderBank");
@@ -60,6 +62,7 @@ public class InterestsFeesService implements IInterestsFeesService {
 
             // new transaction to reflect the payment of interests.
             Transaction transaction = new Transaction(account.getLastInterestGenerated());
+            transaction.setType(Type.ANNUAL_INTERESTS);
             //transaction.setFromAccount(null);
             transaction.setToAccount((Account) account);
             transaction.setAuthorName("SantanderBank");
@@ -78,6 +81,7 @@ public class InterestsFeesService implements IInterestsFeesService {
 
             // new transaction to reflect the deduction of fees
             Transaction transaction = new Transaction(account.getMonthlyMaintenanceFee());
+            transaction.setType(Type.MAINTENANCE_FEE);
             transaction.setFromAccount((Account) account);
             //transaction.setToAccount(null);
             transaction.setAuthorName("SantanderBank");

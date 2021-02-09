@@ -4,6 +4,7 @@ import com.ironhack.bankingsystem.dto.account.MoneyTransferDTO;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.Account;
 import com.ironhack.bankingsystem.model.transaction.Transaction;
+import com.ironhack.bankingsystem.model.transaction.enums.Type;
 import com.ironhack.bankingsystem.service.interfaces.IAccountService;
 import com.ironhack.bankingsystem.service.interfaces.IMoneyTransferService;
 import com.ironhack.bankingsystem.service.interfaces.IOwnerService;
@@ -43,6 +44,7 @@ public class MoneyTransferService implements IMoneyTransferService {
 
         // make the transaction
         Transaction transaction = new Transaction(new Money(transferAmount));
+        transaction.setType(Type.MONEY_TRANSFER);
         transaction.setFromAccount(origin);
         transaction.setToAccount(destination);
         //transaction.setAmount(new Money(transferAmount));
@@ -57,6 +59,7 @@ public class MoneyTransferService implements IMoneyTransferService {
             } catch (Exception e) { }
 
             Transaction deductionTransaction = new Transaction(origin.getPenaltyFee());
+            transaction.setType(Type.PENALTY_FEE);
             deductionTransaction.setFromAccount(origin);
             //deductionTransaction.setToAccount(null);
             //deductionTransaction.setAmount(origin.getPenaltyFee()); // set amount before accounts
