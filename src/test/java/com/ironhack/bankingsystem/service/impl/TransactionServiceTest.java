@@ -17,7 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Currency;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,23 +44,27 @@ class TransactionServiceTest {
         ownerService.addOwner(accountHolder);
         ownerService.addOwner(thirdPartyUser);
 
-        CheckingAccount checkingAccount = new CheckingAccount(thirdPartyUser, new Money(BigDecimal.TEN), "1234");
-        StudentCheckingAccount studentCheckingAccount = new StudentCheckingAccount(accountHolder, new Money(BigDecimal.ONE), "4321");
-        SavingsAccount savingsAccount = new SavingsAccount(thirdPartyUser, new Money(BigDecimal.TEN), "1234");
-        CreditCardAccount creditCardAccount = new CreditCardAccount(accountHolder, new Money(BigDecimal.ZERO));
+        CheckingAccount checkingAccount = new CheckingAccount(thirdPartyUser, new Money(BigDecimal.valueOf(1000)), "1234");
+        StudentCheckingAccount studentCheckingAccount = new StudentCheckingAccount(accountHolder, new Money(BigDecimal.valueOf(1000)), "4321");
+        SavingsAccount savingsAccount = new SavingsAccount(thirdPartyUser, new Money(BigDecimal.valueOf(1000)), "1234");
+        CreditCardAccount creditCardAccount = new CreditCardAccount(accountHolder, new Money(BigDecimal.valueOf(1000)));
 
         accountService.addAccount(checkingAccount);
         accountService.addAccount(studentCheckingAccount);
         accountService.addAccount(savingsAccount);
         accountService.addAccount(creditCardAccount);
 
-        Transaction transaction = new Transaction(checkingAccount, studentCheckingAccount, new Money(BigDecimal.valueOf(5L)), "Alejandro Martínez Naredo", "Esto es una prueba");
+        Transaction transaction = new Transaction(checkingAccount, studentCheckingAccount, new Money(BigDecimal.valueOf(100L)), "Alejandro Martínez Naredo", "Esto es una prueba");
         transactionRepository.save(transaction);
     }
 
     @AfterEach
     void tearDown() {
+        transactionService.deleteAll();
 
+        accountService.deleteAll();
+
+        ownerService.deleteAll();
     }
 
     @Test
@@ -76,10 +79,13 @@ class TransactionServiceTest {
         Account fromAccount = owners.get(0).getPrimaryAccounts().get(0);
         Account toAccount = owners.get(1).getPrimaryAccounts().get(0);
 
-        Transaction transaction = new Transaction(fromAccount, toAccount, new Money(BigDecimal.valueOf(5L)), "Alejandro", "Hola amigo");
+        BigDecimal fromBalance = fromAccount.getBalance().getAmount();
+        BigDecimal toBalance = toAccount.getBalance().getAmount();
+
+        Transaction transaction = new Transaction(fromAccount, toAccount, new Money(BigDecimal.valueOf(100L)), "Alejandro", "Hola amigo");
         transactionService.addTransaction(transaction);
         assertEquals(2, transactionService.getTransactions().size());
-        assertEquals(5, fromAccount.getBalance().getAmount().intValue());
-        assertEquals(6, toAccount.getBalance().getAmount().intValue());
+        assertEquals(fromBalance.intValue() - 100, fromAccount.getBalance().getAmount().intValue());
+        assertEquals(toBalance.intValue() + 100, toAccount.getBalance().getAmount().intValue());
     }
 }
