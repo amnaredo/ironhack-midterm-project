@@ -28,12 +28,12 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     Integer findCountBetweenPeriod(@Param("account") Account account, @Param("initTime")LocalDateTime initTime, @Param("endTime")LocalDateTime endTime);
 
     // Daily total amount of transactions from an account in desc order by total
-    @Query("SELECT t.date AS date, SUM(t.amount.amount) AS total FROM Transaction t WHERE (t.fromAccount = :account OR t.toAccount = :account) GROUP BY date ORDER BY total DESC")
-    List<Object[]> findDailyTotalByDateOrderedDesc(@Param("account") Account account);
+    //@Query("SELECT t.date AS date, SUM(t.amount.amount) AS total FROM Transaction t WHERE (t.fromAccount = :account OR t.toAccount = :account) GROUP BY date ORDER BY total DESC")
+    //List<Object[]> findDailyTotalByDateOrderedDesc(@Param("account") Account account);
 
     // Total amount of transactions in a determined date
-    @Query("SELECT t.date AS date, SUM(t.amount.amount) FROM Transaction t WHERE (t.fromAccount = :account OR t.toAccount = :account) GROUP BY date HAVING date = :date")
-    List<Object[]> findTotalInDate(@Param("account") Account account, @Param("date")String date);
+    //@Query("SELECT t.date AS date, SUM(t.amount.amount) FROM Transaction t WHERE (t.fromAccount = :account OR t.toAccount = :account) GROUP BY date HAVING date = :date")
+    //List<Object[]> findTotalInDate(@Param("account") Account account, @Param("date")String date);
 
     // Total amount of transactions within a determined period
     @Query("SELECT SUM(t.amount.amount) FROM Transaction t WHERE (t.fromAccount = :account OR t.toAccount = :account) AND t.timestamp BETWEEN :initTime AND :endTime")

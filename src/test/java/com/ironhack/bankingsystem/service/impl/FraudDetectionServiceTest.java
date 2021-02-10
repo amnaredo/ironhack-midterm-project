@@ -96,17 +96,14 @@ class FraudDetectionServiceTest {
     void checkMoneyTransferV2_tooManyTransactions() {
         Account account = ownerRepository.findAll().get(0).getPrimaryAccounts().get(0);
 
-        Transaction transactionA = new Transaction(account, account, new Money(BigDecimal.valueOf(100L)), "Alejandro Martínez Naredo", "Esto es una prueba");
-        transactionA.setTimestamp(LocalDateTime.now().plusNanos(500
-        ));
-        transactionRepository.save(transactionA);
-
-        Transaction transactionB = new Transaction(account, account, new Money(BigDecimal.valueOf(100L)), "Alejandro Martínez Naredo", "Esto es una prueba");
-        transactionB.setTimestamp(transactionA.getTimestamp());
-        transactionRepository.save(transactionB);
-
         MoneyTransferDTO moneyTransferDTO = new MoneyTransferDTO();
         moneyTransferDTO.setAmount(BigDecimal.valueOf(100));
+
+        Transaction transactionA = new Transaction(account, account, new Money(BigDecimal.valueOf(100L)), "Alejandro Martínez Naredo", "Esto es una prueba");
+        Transaction transactionB = new Transaction(account, account, new Money(BigDecimal.valueOf(100L)), "Alejandro Martínez Naredo", "Esto es una prueba");
+        transactionA.setTimestamp(LocalDateTime.now());
+        transactionB.setTimestamp(LocalDateTime.now());
+        transactionRepository.saveAll(List.of(transactionA, transactionB));
 
         assertThrows(ResponseStatusException.class, () -> {
             fraudDetectionService.checkMoneyTransferV2(account, moneyTransferDTO);

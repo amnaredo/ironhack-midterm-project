@@ -7,12 +7,12 @@ import com.ironhack.bankingsystem.model.transaction.enums.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+//import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Transaction {
 
-    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    //public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,7 @@ public class Transaction {
     //@Temporal(TemporalType.TIMESTAMP)
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime timestamp;
-    private String date; // to ease searching and querying by date
+    //private String date; // to ease searching and querying by date
 
 
     private String authorName;
@@ -97,7 +97,7 @@ public class Transaction {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
-        this.date = timestamp.format(DATE_FORMATTER);
+        //this.date = timestamp.format(DATE_FORMATTER);
     }
 
     public String getAuthorName() {
