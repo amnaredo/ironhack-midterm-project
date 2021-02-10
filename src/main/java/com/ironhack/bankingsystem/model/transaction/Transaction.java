@@ -23,7 +23,7 @@ public class Transaction {
     @JsonBackReference
     private Account toAccount;
 
-    @CreationTimestamp
+    //@CreationTimestamp // had to quit this for testing fraud detection
     //@Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime timestamp;
 
