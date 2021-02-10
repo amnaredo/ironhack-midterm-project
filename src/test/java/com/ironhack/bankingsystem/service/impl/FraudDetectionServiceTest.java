@@ -97,7 +97,8 @@ class FraudDetectionServiceTest {
         Account account = ownerRepository.findAll().get(0).getPrimaryAccounts().get(0);
 
         Transaction transactionA = new Transaction(account, account, new Money(BigDecimal.valueOf(100L)), "Alejandro Martínez Naredo", "Esto es una prueba");
-        transactionA.setTimestamp(LocalDateTime.now());
+        transactionA.setTimestamp(LocalDateTime.now().plusNanos(500
+        ));
         transactionRepository.save(transactionA);
 
         Transaction transactionB = new Transaction(account, account, new Money(BigDecimal.valueOf(100L)), "Alejandro Martínez Naredo", "Esto es una prueba");

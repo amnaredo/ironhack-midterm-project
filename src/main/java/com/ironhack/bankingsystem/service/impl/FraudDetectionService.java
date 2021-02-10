@@ -127,10 +127,13 @@ public class FraudDetectionService implements IFraudDetectionService {
     }
 
     private BigDecimal getTotalInLast24H(Account account) {
-        return transactionRepository.findTotalInPeriod(
+        BigDecimal total =
+            transactionRepository.findTotalInPeriod(
                 account,
                 LocalDateTime.now().minusHours(24L),
                 LocalDateTime.now());
+
+        return total != null ? total : BigDecimal.ZERO;
     }
 
 }
