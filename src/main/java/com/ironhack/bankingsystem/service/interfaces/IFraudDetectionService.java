@@ -5,4 +5,5 @@ import com.ironhack.bankingsystem.model.account.Account;
 
 public interface IFraudDetectionService {
     void checkMoneyTransfer(Account account, MoneyTransferDTO moneyTransferDTO);
+    void checkMoneyTransferV2(Account account, MoneyTransferDTO moneyTransferDTO);
 }

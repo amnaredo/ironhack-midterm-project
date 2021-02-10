@@ -31,7 +31,8 @@ public class MoneyTransferService implements IMoneyTransferService {
         Account destination = accountService.getAccountById(moneyTransferDTO.getToAccountId());
 
         // check for fraud detection
-        fraudDetectionService.checkMoneyTransfer(origin, moneyTransferDTO);
+        //fraudDetectionService.checkMoneyTransfer(origin, moneyTransferDTO);
+        fraudDetectionService.checkMoneyTransferV2(origin, moneyTransferDTO);
 
         // check enough funds in origin account
         BigDecimal currentBalance = origin.getBalance().getAmount();

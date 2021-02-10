@@ -1,19 +1,25 @@
-package com.ironhack.bankingsystem.repository.transaction;
+package com.ironhack.bankingsystem.service.impl;
 
+import com.ironhack.bankingsystem.dto.account.MoneyTransferDTO;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.Account;
 import com.ironhack.bankingsystem.model.account.CheckingAccount;
 import com.ironhack.bankingsystem.model.account.SavingsAccount;
+import com.ironhack.bankingsystem.model.account.enums.Status;
+import com.ironhack.bankingsystem.model.account.interfaces.WithStatus;
 import com.ironhack.bankingsystem.model.transaction.Transaction;
 import com.ironhack.bankingsystem.model.user.Address;
 import com.ironhack.bankingsystem.model.user.impl.AccountHolder;
 import com.ironhack.bankingsystem.repository.account.AccountRepository;
+import com.ironhack.bankingsystem.repository.transaction.TransactionRepository;
 import com.ironhack.bankingsystem.repository.user.OwnerRepository;
+import com.ironhack.bankingsystem.service.interfaces.IFraudDetectionService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -23,7 +29,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class TransactionRepositoryTest {
+class FraudDetectionServiceTest {
+
+    @Autowired
+    private IFraudDetectionService fraudDetectionService;
 
     @Autowired
     private TransactionRepository transactionRepository;
@@ -38,7 +47,7 @@ class TransactionRepositoryTest {
         AccountHolder accountHolder = new AccountHolder("Alejandro Martínez", LocalDate.of(1984, 4, 14), new Address("Calle Corrida", "Gijón", "33201"));
         ownerRepository.save(accountHolder);
 
-        CheckingAccount checkingAccount = new CheckingAccount(accountHolder, new Money(BigDecimal.valueOf(1000)), "1234");
+        CheckingAccount checkingAccount = new CheckingAccount(accountHolder, new Money(BigDecimal.valueOf(100000)), "1234");
         SavingsAccount savingsAccount = new SavingsAccount(accountHolder, new Money(BigDecimal.valueOf(1000)), "1234");
         accountRepository.saveAll(List.of(checkingAccount, savingsAccount));
 
@@ -61,8 +70,6 @@ class TransactionRepositoryTest {
         Transaction transactionTwoDaysAgo = new Transaction(checkingAccount, savingsAccount, new Money(BigDecimal.valueOf(200L)), "Alejandro Martínez Naredo", "Esto es una prueba");
         transactionTwoDaysAgo.setTimestamp(LocalDateTime.now().minusDays(2));
         transactionRepository.save(transactionTwoDaysAgo);
-
-
     }
 
     @AfterEach
@@ -73,70 +80,36 @@ class TransactionRepositoryTest {
     }
 
     @Test
-    void findCountBetweenPeriod() {
-        LocalDateTime endTime = LocalDateTime.now();
-        LocalDateTime startTime = endTime.minusSeconds(5);
-
-        Integer result = transactionRepository.findCountBetweenPeriod(
-                ownerRepository.findAll().get(0).getPrimaryAccounts().get(0),
-                startTime,
-                endTime);
-        assertEquals(3, result);
-    }
-
-    @Test
-    void findCountBetweenPeriod_lastSecond() {
-        LocalDateTime endTime = LocalDateTime.now();
-        LocalDateTime startTime = endTime.minusSeconds(1);
-
-        Integer result = transactionRepository.findCountBetweenPeriod(
-                ownerRepository.findAll().get(0).getPrimaryAccounts().get(0),
-                startTime,
-                endTime);
-        assertEquals(1, result);
-    }
-
-    @Test
-    void findHighestDailyTotal() {
-        List<Object[]> result =
-                transactionRepository.findDailyTotalByDateOrderedDesc(ownerRepository.findAll().get(0).getPrimaryAccounts().get(0));
-//        for (Object[] objArr : result)
-//            System.out.println(objArr[0].toString() +  " " + objArr[1].toString());
-//        2021-02-10 300.00
-//        2021-02-08 200.00
-//        2021-02-07 100.00
-        assertEquals(LocalDateTime.now().format(Transaction.DATE_FORMATTER), result.get(0)[0]);
-        assertEquals(new BigDecimal("300.00"), result.get(0)[1]);
-        assertEquals(LocalDateTime.now().minusDays(2).format(Transaction.DATE_FORMATTER), result.get(1)[0]);
-        assertEquals(new BigDecimal("200.00"), result.get(1)[1]);
-        assertEquals(LocalDateTime.now().minusDays(3).format(Transaction.DATE_FORMATTER), result.get(2)[0]);
-        assertEquals(new BigDecimal("100.00"), result.get(2)[1]);
-    }
-
-    @Test
-    void findTotalInDate() {
-        List<Object[]> result = transactionRepository.findTotalInDate(ownerRepository.findAll().get(0).getPrimaryAccounts().get(0),
-                LocalDateTime.now().minusDays(3).format(Transaction.DATE_FORMATTER));
-//        for (Object[] objArr : result)
-//            System.out.println(objArr[0].toString() +  " " + objArr[1].toString());
-        assertEquals(LocalDateTime.now().minusDays(3).format(Transaction.DATE_FORMATTER), result.get(0)[0]);
-        assertEquals(new BigDecimal("100.00"), result.get(0)[1]);
-    }
-
-    @Test
-    void findTotalInPeriod() {
-        BigDecimal result = transactionRepository.findTotalInPeriod(ownerRepository.findAll().get(0).getPrimaryAccounts().get(0),
-                LocalDateTime.now().minusWeeks(1),
-                LocalDateTime.now());
-
-        assertEquals(new BigDecimal("600.00"), result);
-    }
-
-    @Test
-    void findByFromAccountOrToAccountOrderByTimestampDesc() {
+    void checkMoneyTransferV2() {
         Account account = ownerRepository.findAll().get(0).getPrimaryAccounts().get(0);
-        List<Transaction> result = transactionRepository.findByFromAccountOrToAccountOrderByTimestampDesc(account, account);
 
-        assertEquals(5, result.size());
+        MoneyTransferDTO moneyTransferDTO = new MoneyTransferDTO();
+        moneyTransferDTO.setAmount(BigDecimal.valueOf(500));
+
+        assertThrows(ResponseStatusException.class, () -> {
+            fraudDetectionService.checkMoneyTransferV2(account, moneyTransferDTO);
+        });
+        assertEquals(Status.FROZEN, ((WithStatus)account).getStatus());
+    }
+
+    @Test
+    void checkMoneyTransferV2_tooManyTransactions() {
+        Account account = ownerRepository.findAll().get(0).getPrimaryAccounts().get(0);
+
+        Transaction transactionA = new Transaction(account, account, new Money(BigDecimal.valueOf(100L)), "Alejandro Martínez Naredo", "Esto es una prueba");
+        transactionA.setTimestamp(LocalDateTime.now());
+        transactionRepository.save(transactionA);
+
+        Transaction transactionB = new Transaction(account, account, new Money(BigDecimal.valueOf(100L)), "Alejandro Martínez Naredo", "Esto es una prueba");
+        transactionB.setTimestamp(transactionA.getTimestamp());
+        transactionRepository.save(transactionB);
+
+        MoneyTransferDTO moneyTransferDTO = new MoneyTransferDTO();
+        moneyTransferDTO.setAmount(BigDecimal.valueOf(100));
+
+        assertThrows(ResponseStatusException.class, () -> {
+            fraudDetectionService.checkMoneyTransferV2(account, moneyTransferDTO);
+        });
+        assertEquals(Status.FROZEN, ((WithStatus)account).getStatus());
     }
 }
