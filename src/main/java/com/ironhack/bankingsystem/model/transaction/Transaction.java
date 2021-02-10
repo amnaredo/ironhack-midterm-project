@@ -8,9 +8,12 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Transaction {
+
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +28,10 @@ public class Transaction {
 
     //@CreationTimestamp // had to quit this for testing fraud detection
     //@Temporal(TemporalType.TIMESTAMP)
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime timestamp;
+    private String date;
+
 
     private String authorName;
     private String description;
@@ -92,6 +98,7 @@ public class Transaction {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+        this.date = timestamp.format(DATE_FORMATTER);
     }
 
     public String getAuthorName() {

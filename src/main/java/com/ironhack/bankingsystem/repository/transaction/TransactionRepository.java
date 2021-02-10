@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,6 +24,18 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 //    - More than 2 transactions occurring on a single account within a 1 second period.
 
     // Number of transactions occurred on a single account within a determined period
-    @Query("SELECT COUNT(*) FROM Transaction t WHERE t.fromAccount = :account AND t.timestamp BETWEEN :initTime AND :endTime")
-    Integer findTransactionsFromAccountBetweenPeriod(@Param("account") Account account, @Param("initTime")LocalDateTime initTime, @Param("endTime")LocalDateTime endTime);
+    @Query("SELECT COUNT(*) FROM Transaction t WHERE (t.fromAccount = :account OR t.toAccount = :account) AND t.timestamp BETWEEN :initTime AND :endTime")
+    Integer findCountBetweenPeriod(@Param("account") Account account, @Param("initTime")LocalDateTime initTime, @Param("endTime")LocalDateTime endTime);
+
+    // Daily total amount of transactions from an account in desc order by total
+    @Query("SELECT t.date AS date, SUM(t.amount.amount) AS total FROM Transaction t WHERE (t.fromAccount = :account OR t.toAccount = :account) GROUP BY date ORDER BY total DESC")
+    List<Object[]> findDailyTotalByDateOrderedDesc(@Param("account") Account account);
+
+//    // Daily total amount of transactions from an account in desc order by total
+//    @Query("SELECT MAX(SUM(t.amount.amount)) AS total FROM Transaction t WHERE (t.fromAccount = :account OR t.toAccount = :account) GROUP BY t.date")
+//    BigDecimal findHighestDailyTotal(@Param("account") Account account);
+
+    // Total amount of transaction in a determined date
+    @Query("SELECT t.date AS date, SUM(t.amount.amount) FROM Transaction t WHERE (t.fromAccount = :account OR t.toAccount = :account) GROUP BY date HAVING date = :date")
+    List<Object[]> findTotalInDate(@Param("account") Account account, @Param("date")String date);
 }
