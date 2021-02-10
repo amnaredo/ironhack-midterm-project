@@ -3,6 +3,7 @@ package com.ironhack.bankingsystem.model.account;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.enums.Type;
 import com.ironhack.bankingsystem.model.account.interfaces.WithAnnualInterest;
+import com.ironhack.bankingsystem.model.account.interfaces.WithStatus;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
 
 import javax.persistence.*;
@@ -15,7 +16,7 @@ import java.time.temporal.ChronoUnit;
 @Entity
 //@Table(name = "savings_account")
 @PrimaryKeyJoinColumn(name = "id")
-public class SavingsAccount extends CheckingAccount implements WithAnnualInterest {
+public class SavingsAccount extends CheckingAccount implements WithAnnualInterest, WithStatus {
 //    Checking Accounts should have:
 //
 //    A balance

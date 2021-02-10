@@ -5,10 +5,7 @@ import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.Account;
 import com.ironhack.bankingsystem.model.transaction.Transaction;
 import com.ironhack.bankingsystem.model.transaction.enums.Type;
-import com.ironhack.bankingsystem.service.interfaces.IAccountService;
-import com.ironhack.bankingsystem.service.interfaces.IMoneyTransferService;
-import com.ironhack.bankingsystem.service.interfaces.IOwnerService;
-import com.ironhack.bankingsystem.service.interfaces.ITransactionService;
+import com.ironhack.bankingsystem.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,11 +21,17 @@ public class MoneyTransferService implements IMoneyTransferService {
     private IOwnerService ownerService;
     @Autowired
     private ITransactionService transactionService;
+    @Autowired
+    private IFraudDetectionService fraudDetectionService;
 
     public Account doMoneyTransfer(MoneyTransferDTO moneyTransferDTO, Long id) {
 
+        // get the accounts involved
         Account origin = accountService.getAccountById(id);
         Account destination = accountService.getAccountById(moneyTransferDTO.getToAccountId());
+
+        // check for fraud detection
+        fraudDetectionService.checkMoneyTransfer(origin, moneyTransferDTO);
 
         // check enough funds in origin account
         BigDecimal currentBalance = origin.getBalance().getAmount();
@@ -54,9 +57,9 @@ public class MoneyTransferService implements IMoneyTransferService {
 
         // deduct penalty fee with another transaction if needed
         if (applyPenaltyFee) {
-            try {
-                Thread.sleep(2000L); // wait 2 seconds to avoid fraud detection
-            } catch (Exception e) { }
+//            try {
+//                Thread.sleep(2000L); // wait 2 seconds to avoid fraud detection
+//            } catch (Exception e) { }
 
             Transaction deductionTransaction = new Transaction(origin.getPenaltyFee());
             transaction.setType(Type.PENALTY_FEE);

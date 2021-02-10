@@ -5,6 +5,7 @@ import com.ironhack.bankingsystem.model.account.enums.Status;
 import com.ironhack.bankingsystem.model.account.enums.Type;
 import com.ironhack.bankingsystem.model.account.interfaces.WithMonthlyFee;
 import com.ironhack.bankingsystem.model.account.interfaces.WithSecretKey;
+import com.ironhack.bankingsystem.model.account.interfaces.WithStatus;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ import java.time.temporal.ChronoUnit;
 @Entity
 //@Table(name = "checking_account")
 @PrimaryKeyJoinColumn(name = "id")
-public class CheckingAccount extends Account implements WithMonthlyFee, WithSecretKey {
+public class CheckingAccount extends Account implements WithMonthlyFee, WithSecretKey, WithStatus {
 //    Checking Accounts should have:
 //
 //    A balance
