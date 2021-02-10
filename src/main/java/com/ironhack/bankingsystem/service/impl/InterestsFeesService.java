@@ -87,7 +87,6 @@ public class InterestsFeesService implements IInterestsFeesService {
             transaction.setAuthorName("SantanderBank");
             String dateString = feeAppliedDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
             transaction.setDescription("Maintenance fee deductions since " + dateString);
-
             transactionService.addTransaction(transaction);
 
             // update account info

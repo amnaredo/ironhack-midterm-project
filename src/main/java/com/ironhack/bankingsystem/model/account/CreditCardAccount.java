@@ -62,13 +62,13 @@ public class CreditCardAccount extends Account implements WithMonthlyInterest {
     public CreditCardAccount(Owner owner, Money balance,
                              @DecimalMin(value = "100.0", message = "Credit limit must be greater than 100")
                              @DecimalMax(value = "100000.0", message = "Credit limit must be lesser than 100000")
-                             Double creditLimit,
+                             BigDecimal creditLimit,
                              @DecimalMin(value = "0.1", message = "Interest rate must be greater than 0.1")
                              @DecimalMax(value = "0.2", message = "Interest rate must be lesser than 0.2")
-                             Double interestRate) {
+                             BigDecimal interestRate) {
         super(owner, balance);
-        setCreditLimit(new Money(BigDecimal.valueOf(creditLimit)));
-        setInterestRate(BigDecimal.valueOf(interestRate));
+        setCreditLimit(new Money(creditLimit));
+        setInterestRate(interestRate);
         setType(Type.CREDIT_CARD);
         setInterestAddedDateTime(getCreationDateTime());
     }

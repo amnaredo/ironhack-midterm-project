@@ -63,14 +63,14 @@ public class SavingsAccount extends CheckingAccount implements WithAnnualInteres
     public SavingsAccount(Owner owner, Money balance, String secretKey,
                           @DecimalMin(value = "0.0", message = "Interest rate must be non negative")
                           @DecimalMax(value = "0.5", message = "Interest rate must be lesser than 0.5")
-                          Double interestRate,
+                          BigDecimal interestRate,
                           @DecimalMin(value = "100", message = "Minimum balance must be greater than 100")
                           @DecimalMax(value = "1000", message = "Minimum balance must be lesser than 1000")
-                          Double minimumBalance) {
+                          BigDecimal minimumBalance) {
         super(owner, balance, secretKey);
         setMonthlyMaintenanceFee(new Money(BigDecimal.ZERO));
-        setMinimumBalance(new Money(BigDecimal.valueOf(minimumBalance)));
-        setInterestRate(BigDecimal.valueOf(interestRate));
+        setMinimumBalance(new Money(minimumBalance));
+        setInterestRate(interestRate);
         setType(Type.SAVINGS);
         setInterestAddedDateTime(getCreationDateTime());
     }
