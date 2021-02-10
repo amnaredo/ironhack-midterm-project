@@ -78,7 +78,7 @@ class MoneyTransferServiceTest {
         moneyTransferDTO.setAmount(amount);
         moneyTransferDTO.setName("Alejandro Martínez");
         moneyTransferDTO.setDescription("money transfer test");
-        moneyTransferDTO.setToAccount(destinationId);
+        moneyTransferDTO.setToAccountId(destinationId);
         accountService.startMoneyTransfer(moneyTransferDTO, originId);
 
         origin = accountRepository.findByPrimaryOwner(ownerService.getOwners().get(0)).get(0);

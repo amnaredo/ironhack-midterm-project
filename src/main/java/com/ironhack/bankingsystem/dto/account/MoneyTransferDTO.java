@@ -18,16 +18,19 @@ public class MoneyTransferDTO {
     @Digits(integer = 6, fraction = 2/*, message = "Wrong amount format"*/)
     @DecimalMin(value = "0"/*, message = "Amount must be non negative"*/)
     private BigDecimal amount;
-    //private String currency;
+
     @NotBlank/*(message = "Name is required")*/
     private String name;
     private String description;
+
+    private String secretKey; // third party users need this
+
 
     public Long getToAccountId() {
         return toAccountId;
     }
 
-    public void setToAccount(Long toAccountId) {
+    public void setToAccountId(Long toAccountId) {
         this.toAccountId = toAccountId;
     }
 
@@ -39,13 +42,6 @@ public class MoneyTransferDTO {
         this.amount = amount;
     }
 
-//    public String getCurrency() {
-//        return currency;
-//    }
-
-//    public void setCurrency(String currency) {
-//        this.currency = currency;
-//    }
 
     public String getName() {
         return name;
@@ -61,5 +57,13 @@ public class MoneyTransferDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
     }
 }
