@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.Account;
 import com.ironhack.bankingsystem.model.transaction.enums.Type;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -30,7 +29,7 @@ public class Transaction {
     //@Temporal(TemporalType.TIMESTAMP)
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime timestamp;
-    private String date;
+    private String date; // to ease searching and querying by date
 
 
     private String authorName;

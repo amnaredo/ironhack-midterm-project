@@ -31,10 +31,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @Query("SELECT t.date AS date, SUM(t.amount.amount) AS total FROM Transaction t WHERE (t.fromAccount = :account OR t.toAccount = :account) GROUP BY date ORDER BY total DESC")
     List<Object[]> findDailyTotalByDateOrderedDesc(@Param("account") Account account);
 
-//    // Daily total amount of transactions from an account in desc order by total
-//    @Query("SELECT MAX(SUM(t.amount.amount)) AS total FROM Transaction t WHERE (t.fromAccount = :account OR t.toAccount = :account) GROUP BY t.date")
-//    BigDecimal findHighestDailyTotal(@Param("account") Account account);
-
     // Total amount of transaction in a determined date
     @Query("SELECT t.date AS date, SUM(t.amount.amount) FROM Transaction t WHERE (t.fromAccount = :account OR t.toAccount = :account) GROUP BY date HAVING date = :date")
     List<Object[]> findTotalInDate(@Param("account") Account account, @Param("date")String date);
