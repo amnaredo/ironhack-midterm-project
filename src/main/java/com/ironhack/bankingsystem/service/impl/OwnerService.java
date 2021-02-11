@@ -60,7 +60,7 @@ public class OwnerService implements IOwnerService {
 
     public AccountHolder addAccountHolder(AccountHolderDTO accountHolderDTO) {
         AccountHolder accountHolder = new AccountHolder();
-        System.out.println("AAa");
+
         // Type check
         try {
             accountHolder.setType(Type.valueOf(accountHolderDTO.getType().toUpperCase()));
@@ -68,21 +68,17 @@ public class OwnerService implements IOwnerService {
                 throw new IllegalArgumentException();
         }
         catch (IllegalArgumentException e) {
-            System.out.println("******************************1");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Type is not valid");
         }
 
-        System.out.println("BBB");
         // Date of birth check
         try {
             accountHolder.setDateOfBirth(LocalDate.parse(accountHolderDTO.getDateOfBirth()));
         }
         catch (IllegalArgumentException e) {
-            System.out.println("****************************2");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Date of birth is not valid");
         }
 
-        System.out.println("*********HOLLAAA");
         accountHolder.setName(accountHolderDTO.getName());
         accountHolder.setPrimaryAddress(new Address(accountHolderDTO.getStreet(), accountHolderDTO.getCity(), accountHolderDTO.getPostalCode()));
         accountHolder.setMailingAddress(new Address(accountHolderDTO.getMailingStreet(), accountHolderDTO.getMailingCity(), accountHolderDTO.getMailingPostalCode()));

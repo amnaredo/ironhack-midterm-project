@@ -62,7 +62,7 @@ class OwnerControllerTest {
 
     @AfterEach
     void tearDown() {
-        
+
         repository.deleteAll();
     }
 
