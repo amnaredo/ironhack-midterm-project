@@ -143,15 +143,14 @@ public class AccountController implements IAccountController {
     @ResponseStatus(HttpStatus.CREATED)
     public Account transferMoney(
             @RequestHeader(value = "Authorization", required = false)
-                    String token,
+            String token,
             @RequestBody
             @Valid
-                    MoneyTransferDTO moneyTransferDTO,
+            MoneyTransferDTO moneyTransferDTO,
             @PathVariable
             @NumberFormat
             @Min(1)
-                    Long id) {
-
+            Long id) {
         authService.authMoneyTransfer(token, moneyTransferDTO, id);
         return accountService.startMoneyTransfer(moneyTransferDTO, id);
     }
