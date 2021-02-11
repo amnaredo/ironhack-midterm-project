@@ -41,6 +41,9 @@ public class OwnerService implements IOwnerService {
     }
 
     public Optional<Owner> getOwnerById(Long id) {
+        if(!ownerRepository.existsById(id))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found");
+
         return ownerRepository.findById(id);
     }
 

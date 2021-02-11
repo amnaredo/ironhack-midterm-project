@@ -3,6 +3,7 @@ package com.ironhack.bankingsystem.service.impl;
 import com.ironhack.bankingsystem.dto.account.*;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.*;
+import com.ironhack.bankingsystem.model.account.enums.Type;
 import com.ironhack.bankingsystem.model.user.Address;
 import com.ironhack.bankingsystem.model.user.impl.AccountHolder;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
@@ -141,6 +142,25 @@ class AccountServiceTest {
     }
 
     @Test
+    void addChecking_ownerUnder24_studentsChecking() {
+        AccountHolder owner = new AccountHolder(
+                "Jaimito",
+                LocalDate.of(2010, 1, 1),
+                new Address("Calle Mayor", "Barcelona", "12345"));
+        Owner primaryOwner = ownerService.addOwner(owner);
+
+        CheckingAccountDTO checkingAccountDTO = new CheckingAccountDTO();
+        checkingAccountDTO.setBalance(BigDecimal.ZERO);
+        checkingAccountDTO.setSecretKey("secretkey");
+        accountService.addChecking(checkingAccountDTO, owner.getId(), Optional.empty());
+
+        List<Account> accounts = accountRepository.findByPrimaryOwner(primaryOwner);
+        assertEquals(1, accounts.size());
+        assertEquals("secretkey", ((CheckingAccount)accounts.get(accounts.size()-1)).getSecretKey());
+        assertEquals(Type.STUDENT_CHECKING, accounts.get(accounts.size()-1).getType());
+    }
+
+    @Test
     void addSavings() {
         Owner primaryOwner = ownerService.getOwners().get(0);
         AccountHolder owner = new AccountHolder(
@@ -167,7 +187,7 @@ class AccountServiceTest {
         assertEquals(secondaryOwner.getName(), accounts.get(accounts.size()-1).getSecondaryOwner().getName());
         assertEquals(primaryOwner.getName(), moreAccounts.get(0).getPrimaryOwner().getName());
     }
-
+    
     @Test
     void addCreditCard() {
         Owner primaryOwner = ownerService.getOwners().get(1);

@@ -1,15 +1,13 @@
 package com.ironhack.bankingsystem.controller.impl;
 
 import com.ironhack.bankingsystem.controller.interfaces.IAccountController;
-import com.ironhack.bankingsystem.dto.account.CheckingAccountDTO;
-import com.ironhack.bankingsystem.dto.account.CreditCardAccountDTO;
-import com.ironhack.bankingsystem.dto.account.NewBalanceDTO;
-import com.ironhack.bankingsystem.dto.account.SavingsAccountDTO;
+import com.ironhack.bankingsystem.dto.account.*;
 import com.ironhack.bankingsystem.model.account.Account;
 import com.ironhack.bankingsystem.model.account.CheckingAccount;
 import com.ironhack.bankingsystem.model.account.CreditCardAccount;
 import com.ironhack.bankingsystem.model.account.SavingsAccount;
 import com.ironhack.bankingsystem.service.interfaces.IAccountService;
+import com.ironhack.bankingsystem.service.interfaces.IAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.http.HttpStatus;
@@ -25,11 +23,28 @@ public class AccountController implements IAccountController {
 
     @Autowired
     private IAccountService accountService;
+    @Autowired
+    private IAuthService authService;
 
     @GetMapping("/accounts")
     @ResponseStatus(HttpStatus.OK)
     public List<Account> getAccounts() {
         return accountService.getAccounts();
+    }
+
+    @GetMapping("/accounts/{id}")
+    public Account getAccount(
+            @PathVariable
+            @NumberFormat
+            @Min(1)
+            Long id) {
+        return accountService.getAccountById(id);
+    }
+
+    @GetMapping("/owners/{id}/accounts")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Account> getAccountsByOwner(@PathVariable("id") @NumberFormat @Min(1) Long id) {
+        return accountService.getAccountsByOwner(id);
     }
 
     @PostMapping("/accounts/checking/{id}")
@@ -122,6 +137,23 @@ public class AccountController implements IAccountController {
             @Min(1)
             Long otherId) {
         return accountService.addCreditCard(creditCardAccountDTO, id, Optional.of(otherId));
+    }
+
+    @PostMapping("/accounts/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Account transferMoney(
+            @RequestHeader(value = "Authorization", required = false)
+                    String token,
+            @RequestBody
+            @Valid
+                    MoneyTransferDTO moneyTransferDTO,
+            @PathVariable
+            @NumberFormat
+            @Min(1)
+                    Long id) {
+
+        authService.authMoneyTransfer(token, moneyTransferDTO, id);
+        return accountService.startMoneyTransfer(moneyTransferDTO, id);
     }
 
     @PatchMapping("/accounts/{id}")

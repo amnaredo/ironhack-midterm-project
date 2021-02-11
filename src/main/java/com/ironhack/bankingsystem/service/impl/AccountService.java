@@ -70,6 +70,12 @@ public class AccountService implements IAccountService {
         return saveAccount(account);
     }
 
+    public List<Account> getAccountsByOwner(Long idOwner) {
+        Owner owner = ownerService.getOwnerById(idOwner).get();
+
+        return accountRepository.findByPrimaryOwnerOrSecondaryOwner(owner, owner);
+    }
+
     public Account addAccount(Account account) {
         switch (account.getType()) {
             case CHECKING:

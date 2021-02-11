@@ -8,10 +8,12 @@ import com.ironhack.bankingsystem.model.user.impl.Owner;
 import com.ironhack.bankingsystem.model.user.impl.ThirdPartyUser;
 import com.ironhack.bankingsystem.service.interfaces.IOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.NumberFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
@@ -24,6 +26,12 @@ public class OwnerController implements IOwnerController {
     @ResponseStatus(HttpStatus.OK)
     public List<Owner> getOwners() {
         return ownerService.getOwners();
+    }
+
+    @GetMapping("/owners/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Owner getOwnerById(@PathVariable("id") @NumberFormat @Min(1) Long id) {
+        return ownerService.getOwnerById(id).get();
     }
 
     @PostMapping("/owners/ah")

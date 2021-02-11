@@ -14,4 +14,6 @@ public interface IOwnerController {
 
     AccountHolder addAccountHolder(AccountHolderDTO accountHolderDTO);
     ThirdPartyUser addThirdPartyUser(ThirdPartyUserDTO thirdPartyUserDTO);
+
+    Owner getOwnerById(Long id);
 }
