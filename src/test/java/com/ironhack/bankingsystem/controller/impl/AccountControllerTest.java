@@ -1,9 +1,7 @@
 package com.ironhack.bankingsystem.controller.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ironhack.bankingsystem.dto.account.CheckingAccountDTO;
-import com.ironhack.bankingsystem.dto.account.CreditCardAccountDTO;
-import com.ironhack.bankingsystem.dto.account.SavingsAccountDTO;
+import com.ironhack.bankingsystem.dto.account.*;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.*;
 import com.ironhack.bankingsystem.model.account.enums.Type;
@@ -12,6 +10,7 @@ import com.ironhack.bankingsystem.model.user.impl.AccountHolder;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
 import com.ironhack.bankingsystem.model.user.impl.ThirdPartyUser;
 import com.ironhack.bankingsystem.repository.account.AccountRepository;
+import com.ironhack.bankingsystem.repository.transaction.TransactionRepository;
 import com.ironhack.bankingsystem.repository.user.OwnerRepository;
 import com.ironhack.bankingsystem.service.interfaces.IAccountService;
 import org.junit.jupiter.api.AfterEach;
@@ -19,9 +18,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -30,8 +31,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -46,6 +46,8 @@ class AccountControllerTest {
     private IAccountService service;
     @Autowired
     private OwnerRepository ownerRepository;
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     private MockMvc mockMvc;
 
@@ -72,16 +74,16 @@ class AccountControllerTest {
         CheckingAccount check = new CheckingAccount(
                 tpu,
                 new Money(BigDecimal.valueOf(10000L)),
-                "secretKeyA");
+                "43211234");
         StudentCheckingAccount stCheck = new StudentCheckingAccount(
-                ah,
-                new Money(BigDecimal.valueOf(5000L)),
-                "secretKeyB");
-        SavingsAccount sav = new SavingsAccount(
                 ah2,
+                new Money(BigDecimal.valueOf(5000L)),
+                "12345678");
+        SavingsAccount sav = new SavingsAccount(
+                ah,
                 new Money(BigDecimal.valueOf(10000L)),
-                "secretKeyC");
-        sav.setSecondaryOwner(ah);
+                "98765432");
+        sav.setSecondaryOwner(ah2);
         CreditCardAccount cc = new CreditCardAccount(
                 ah,
                 new Money(BigDecimal.valueOf(1000L)));
@@ -91,7 +93,7 @@ class AccountControllerTest {
 
     @AfterEach
     void tearDown() {
-
+        transactionRepository.deleteAll();
         repository.deleteAll();
         ownerRepository.deleteAll();
     }
@@ -180,7 +182,6 @@ class AccountControllerTest {
         // checking account because age of primary owner >= 24
         assertTrue(result.getResponse().getContentAsString().contains(Type.CHECKING.toString()));
     }
-
 
     @Test
     void addSavings() throws Exception {
@@ -279,12 +280,101 @@ class AccountControllerTest {
     }
 
     @Test
-    void transferMoney() {
+    void transferMoney_accountHolder() throws Exception {
+        List<Owner> owners = ownerRepository.findAll();
+        Long idOwner = owners.get(0).getId();
+        Account fromAccount = owners.get(0).getPrimaryAccounts().get(1);
+        Account toAccount = owners.get(0).getPrimaryAccounts().get(0);
 
+        MoneyTransferDTO transfer = new MoneyTransferDTO();
+        transfer.setAmount(new BigDecimal("200.00"));
+        transfer.setToAccountId(toAccount.getId());
+        transfer.setName(owners.get(0).getName());
+        transfer.setDescription("More savings!");
+        String body = objectMapper.writeValueAsString(transfer);
+
+        MvcResult result =
+                mockMvc.perform(
+                        post("/accounts/" + fromAccount.getId())
+                                .content(body)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isCreated())
+                        .andReturn();
+        assertTrue(result.getResponse().getContentAsString().contains(owners.get(0).getName()));
+        assertTrue(result.getResponse().getContentAsString().contains("800.00")); // savings account
     }
 
     @Test
-    void updateBalance() {
+    void transferMoney_accountHolder_secondOwner() throws Exception {
+        List<Owner> owners = ownerRepository.findAll();
+        Long idOwner = owners.get(0).getId();
+        Account fromAccount = owners.get(0).getPrimaryAccounts().get(0);
+        Account toAccount = owners.get(0).getPrimaryAccounts().get(1);
 
+        MoneyTransferDTO transfer = new MoneyTransferDTO();
+        transfer.setAmount(new BigDecimal("500.00"));
+        transfer.setToAccountId(toAccount.getId());
+        transfer.setName(fromAccount.getSecondaryOwner().getName());
+        transfer.setDescription("Less savings... to spend with credit card");
+        String body = objectMapper.writeValueAsString(transfer);
+
+        MvcResult result =
+                mockMvc.perform(
+                        post("/accounts/" + fromAccount.getId())
+                                .content(body)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isCreated())
+                        .andReturn();
+        assertTrue(result.getResponse().getContentAsString().contains(fromAccount.getSecondaryOwner().getName()));
+        assertTrue(result.getResponse().getContentAsString().contains("9500.00")); // credit card account
+    }
+
+    @Test
+    void transferMoney_thirdPartyUser() throws Exception {
+        List<Owner> owners = ownerRepository.findAll();
+        Long idOwner = owners.get(2).getId();
+        Account fromAccount = owners.get(2).getPrimaryAccounts().get(0);
+        Account toAccount = owners.get(0).getPrimaryAccounts().get(1);
+
+        MoneyTransferDTO transfer = new MoneyTransferDTO();
+        transfer.setAmount(new BigDecimal("200.00"));
+        transfer.setToAccountId(toAccount.getId());
+        transfer.setName(owners.get(2).getName());
+        transfer.setDescription("Refund of money");
+        transfer.setSecretKey("43211234");
+        String body = objectMapper.writeValueAsString(transfer);
+        MvcResult result =
+//        String message =
+                mockMvc.perform(
+                        post("/accounts/" + fromAccount.getId())
+
+                                .header("HashedKey", "hashedKey")
+                                .content(body)
+                                .contentType(MediaType.APPLICATION_JSON))
+//                        .andDo(MockMvcResultHandlers.print())
+                        .andExpect(status().isCreated())
+                        .andReturn();
+//        .andReturn().getResolvedException().getMessage();
+//        System.out.println(message);
+        assertTrue(result.getResponse().getContentAsString().contains(owners.get(2).getName()));
+        assertTrue(result.getResponse().getContentAsString().contains("9800.00")); // checking account
+    }
+
+    @Test
+    void updateBalance() throws Exception {
+        List<Owner> owners = ownerRepository.findAll();
+        Long idOwner = owners.get(1).getId();
+        Account account = owners.get(1).getPrimaryAccounts().get(0);
+
+        NewBalanceDTO newBalance = new NewBalanceDTO();
+        newBalance.setBalance(new BigDecimal("5500.00"));
+        String body = objectMapper.writeValueAsString(newBalance);
+        MvcResult result =
+                mockMvc.perform(
+                        patch("/accounts/" + account.getId())
+                                .content(body)
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNoContent())
+                        .andReturn();
     }
 }

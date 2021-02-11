@@ -52,7 +52,7 @@ public class AuthService implements IAuthService {
         if(ownerType.equals(Type.THIRD_PARTY_USER)) {
 
             // check if the hashed key is present in the header
-            if (token == null || token.isEmpty() ||  token.isBlank()) {
+            if (token == null || token.isEmpty() || token.isBlank()) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No token or invalid token provided");
             }
 

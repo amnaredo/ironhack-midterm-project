@@ -24,5 +24,6 @@ public interface IAccountController {
     CreditCardAccount addCreditCard(CreditCardAccountDTO creditCardAccountDTO, Long ownerId, Long otherOwnerId);
 
     Account transferMoney(String headerToken, MoneyTransferDTO moneyTransferDTO, Long id);
+
     void updateBalance(NewBalanceDTO newBalanceDTO, Long id);
 }

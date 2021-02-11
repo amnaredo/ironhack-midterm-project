@@ -67,9 +67,9 @@ class TransactionRepositoryTest {
 
     @AfterEach
     void tearDown() {
-        transactionRepository.deleteAll();
-        accountRepository.deleteAll();
-        ownerRepository.deleteAll();
+//        transactionRepository.deleteAll();
+//        accountRepository.deleteAll();
+//        ownerRepository.deleteAll();
     }
 
     @Test

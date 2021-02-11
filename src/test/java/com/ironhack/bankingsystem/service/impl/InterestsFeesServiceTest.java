@@ -70,16 +70,12 @@ class InterestsFeesServiceTest {
         accountService.addAccount(studentCheckingAccount);
         accountService.addAccount(savingsAccount);
         accountService.addAccount(creditCardAccount);
-
     }
 
     @AfterEach
     void tearDown() {
-
         transactionService.deleteAll();
-
         accountService.deleteAll();
-
         ownerService.deleteAll();
     }
 
@@ -100,7 +96,5 @@ class InterestsFeesServiceTest {
         assertEquals(BigDecimal.valueOf(1000).longValueExact(), studentCheckingAccount.getBalance().getAmount().longValueExact());
         assertTrue(BigDecimal.valueOf(1000).compareTo(creditCardAccount.getBalance().getAmount()) < 0);
         assertEquals(BigDecimal.valueOf(1002.5).setScale(2), savingsAccount.getBalance().getAmount());
-
     }
-
 }

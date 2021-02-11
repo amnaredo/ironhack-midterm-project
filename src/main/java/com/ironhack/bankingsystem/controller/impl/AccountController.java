@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -139,10 +140,11 @@ public class AccountController implements IAccountController {
         return accountService.addCreditCard(creditCardAccountDTO, id, Optional.of(otherId));
     }
 
-    @PostMapping("/accounts/{id}")
+
+    @PostMapping(value = "/accounts/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public Account transferMoney(
-            @RequestHeader(value = "Authorization", required = false)
+            @RequestHeader(value = "HashedKey", required = false)
             String token,
             @RequestBody
             @Valid
@@ -151,9 +153,11 @@ public class AccountController implements IAccountController {
             @NumberFormat
             @Min(1)
             Long id) {
+
         authService.authMoneyTransfer(token, moneyTransferDTO, id);
         return accountService.startMoneyTransfer(moneyTransferDTO, id);
     }
+
 
     @PatchMapping("/accounts/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -163,6 +167,7 @@ public class AccountController implements IAccountController {
             NewBalanceDTO newBalanceDTO,
             @PathVariable
             @NumberFormat
+            @Min(1)
             Long id) {
         accountService.updateBalance(newBalanceDTO, id);
     }
