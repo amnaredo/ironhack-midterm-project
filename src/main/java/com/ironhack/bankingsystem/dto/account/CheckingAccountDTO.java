@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 public class CheckingAccountDTO extends AccountDTO {
 
-    @Pattern(regexp = "^[0-9]{4,8}$")
+    @Pattern(regexp = "^[0-9]{4,8}$") // PIN number
     private String secretKey;
 
 

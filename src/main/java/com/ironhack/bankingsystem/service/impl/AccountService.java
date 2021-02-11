@@ -92,7 +92,7 @@ public class AccountService implements IAccountService {
     }
 
     public CheckingAccount addChecking(CheckingAccountDTO checkingAccountDTO, Long id, Optional<Long> otherId) {
-
+        System.out.println("HOLAAAAAAAAAAAAAAAAAAAAAA");
         if (!ownerService.existsOwner(id) || (otherId.isPresent() && !ownerService.existsOwner(otherId.get())))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id not valid");
 
