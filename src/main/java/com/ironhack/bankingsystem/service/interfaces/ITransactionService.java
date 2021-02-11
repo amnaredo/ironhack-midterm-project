@@ -7,6 +7,7 @@ import java.util.List;
 public interface ITransactionService {
 
     List<Transaction> getTransactions();
+    List<Transaction> getTransactionsByAccount(Long idAccount);
     Transaction addTransaction(Transaction transaction);
     void deleteAll();
 }

@@ -7,4 +7,5 @@ import java.util.List;
 public interface ITransactionController {
 
     List<Transaction> getTransactions();
+    List<Transaction> getTransactionsByAccount(Long idAccount);
 }
