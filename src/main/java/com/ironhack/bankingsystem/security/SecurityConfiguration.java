@@ -42,10 +42,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic();
-        http.authorizeRequests()
-                .mvcMatchers("/hello-world").authenticated()
-                .mvcMatchers("/goodbye-world").hasRole("ADMIN")
-                .mvcMatchers("/say-hello").authenticated()
+        http.csrf().disable().authorizeRequests()
+                .mvcMatchers("/users").hasRole("ADMIN")//.authenticated()
+                .mvcMatchers("/users/**").hasRole("ADMIN")//.authenticated()
+//                .mvcMatchers("/hello-world").authenticated()
+//                .mvcMatchers("/goodbye-world").hasRole("ADMIN")
+//                .mvcMatchers("/say-hello").authenticated()
                 .anyRequest().permitAll();
     }
 }

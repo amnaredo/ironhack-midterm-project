@@ -1,6 +1,7 @@
 package com.ironhack.bankingsystem.model.user;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ironhack.bankingsystem.model.user.enums.Type;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -17,6 +18,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Role> roles;
+
+    @Enumerated(EnumType.STRING)
+    private Type type;
 
     public User() {
     }
@@ -61,5 +65,13 @@ public class User {
 
     public Boolean hasAccountAccess(Long idAccount) {
         return false;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 }

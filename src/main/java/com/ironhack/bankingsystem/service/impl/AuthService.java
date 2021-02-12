@@ -25,6 +25,7 @@ public class AuthService implements IAuthService {
         return true;
         // todo
         //  check ownership of the account
+
     }
 
     public Boolean authMoneyTransfer(String token, MoneyTransferDTO moneyTransferDTO, Long accountId) {

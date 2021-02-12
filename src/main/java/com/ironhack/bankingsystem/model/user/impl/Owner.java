@@ -27,8 +27,8 @@ public abstract class Owner extends User implements IOwner, Serializable {
 //    private Long id;
 
     private String name;
-    @Enumerated(EnumType.STRING)
-    private Type type;
+//    @Enumerated(EnumType.STRING)
+//    private Type type;
 
     @JsonBackReference
     @OneToMany(mappedBy = "primaryOwner", fetch = FetchType.EAGER/*, orphanRemoval = true*/)
@@ -67,13 +67,13 @@ public abstract class Owner extends User implements IOwner, Serializable {
         this.name = name;
     }
 
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
+//    public Type getType() {
+//        return type;
+//    }
+//
+//    public void setType(Type type) {
+//        this.type = type;
+//    }
 
     public List<Account> getPrimaryAccounts() {
         return new ArrayList<Account>(primaryAccounts);

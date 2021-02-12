@@ -59,4 +59,8 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public boolean hasAccountAccess(Long idAccount) {
+        return user.hasAccountAccess(idAccount);
+    }
 }
