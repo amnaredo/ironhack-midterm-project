@@ -3,6 +3,7 @@ package com.ironhack.bankingsystem.service.impl;
 import com.ironhack.bankingsystem.dto.owner.AccountHolderDTO;
 import com.ironhack.bankingsystem.dto.owner.ThirdPartyUserDTO;
 import com.ironhack.bankingsystem.model.user.Address;
+import com.ironhack.bankingsystem.model.user.Role;
 import com.ironhack.bankingsystem.model.user.enums.Type;
 import com.ironhack.bankingsystem.model.user.impl.AccountHolder;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
@@ -11,14 +12,14 @@ import com.ironhack.bankingsystem.repository.user.AccountHolderRepository;
 import com.ironhack.bankingsystem.repository.user.ThirdPartyUserRepository;
 import com.ironhack.bankingsystem.repository.user.OwnerRepository;
 import com.ironhack.bankingsystem.service.interfaces.IOwnerService;
+import com.ironhack.bankingsystem.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OwnerService implements IOwnerService {
@@ -83,6 +84,12 @@ public class OwnerService implements IOwnerService {
         accountHolder.setPrimaryAddress(new Address(accountHolderDTO.getStreet(), accountHolderDTO.getCity(), accountHolderDTO.getPostalCode()));
         accountHolder.setMailingAddress(new Address(accountHolderDTO.getMailingStreet(), accountHolderDTO.getMailingCity(), accountHolderDTO.getMailingPostalCode()));
 
+        // set user credentials
+        accountHolder.setUsername(accountHolderDTO.getUsername());
+        accountHolder.setPassword(PasswordUtil.encryptPassword(accountHolderDTO.getPassword()));
+        Set<Role> roleSet = new HashSet<Role>(Arrays.asList(new Role("OWNER", accountHolder)));
+        accountHolder.setRoles(roleSet);
+
         return saveAccountHolder(accountHolder);
     }
 
@@ -101,6 +108,12 @@ public class OwnerService implements IOwnerService {
 
         thirdPartyUser.setName(thirdPartyUserDTO.getName());
         thirdPartyUser.setHashedKey(thirdPartyUserDTO.getHashedKey());
+
+        // set user credentials
+        thirdPartyUser.setUsername(thirdPartyUserDTO.getUsername());
+        thirdPartyUser.setPassword(PasswordUtil.encryptPassword(thirdPartyUserDTO.getPassword()));
+        Set<Role> roleSet = new HashSet<Role>(Arrays.asList(new Role("OWNER", thirdPartyUser)));
+        thirdPartyUser.setRoles(roleSet);
 
         return saveThirdPartyUser(thirdPartyUser);
     }

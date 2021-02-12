@@ -3,16 +3,16 @@ package com.ironhack.bankingsystem.dto.user;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public class AdminDTO {
+public class UserDTO {
     @NotBlank(message = "Name is required")
     @Size(min = 2, max = 40)
     private String name;
 
     @NotBlank(message = "Username is required")
-    @Size(min = 8, max = 16)
+    @Size(min = 4, max = 10)
     private String username;
     @NotBlank(message = "Password is required")
-    @Size(min = 8, max = 16)
+    @Size(min = 4, max = 10)
     private String password;
 
 

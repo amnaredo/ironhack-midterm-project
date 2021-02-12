@@ -1,6 +1,6 @@
 package com.ironhack.bankingsystem.service.impl;
 
-import com.ironhack.bankingsystem.dto.user.AdminDTO;
+import com.ironhack.bankingsystem.dto.user.UserDTO;
 import com.ironhack.bankingsystem.model.user.Admin;
 import com.ironhack.bankingsystem.model.user.Role;
 import com.ironhack.bankingsystem.model.user.User;
@@ -33,12 +33,12 @@ public class AdminService implements IAdminService {
         return userRepository.findAll();
     }
 
-    public Admin addAdmin(AdminDTO adminDTO) {
+    public Admin addAdmin(UserDTO userDTO) {
         Admin admin = new Admin();
         admin.setType(Type.ADMIN);
-        admin.setUsername(adminDTO.getUsername());
-        admin.setPassword(PasswordUtil.encryptPassword(adminDTO.getPassword()));
-        admin.setName(adminDTO.getName());
+        admin.setUsername(userDTO.getUsername());
+        admin.setPassword(PasswordUtil.encryptPassword(userDTO.getPassword()));
+        admin.setName(userDTO.getName());
         Set<Role> roleSet = new HashSet<Role>(Arrays.asList(new Role("ADMIN", admin)));
         admin.setRoles(roleSet);
         return adminRepository.save(admin);
