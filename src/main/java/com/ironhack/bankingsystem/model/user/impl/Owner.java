@@ -3,8 +3,11 @@ package com.ironhack.bankingsystem.model.user.impl;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ironhack.bankingsystem.model.account.Account;
+import com.ironhack.bankingsystem.model.user.User;
 import com.ironhack.bankingsystem.model.user.enums.Type;
 import com.ironhack.bankingsystem.model.user.interfaces.IOwner;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,14 +16,15 @@ import java.util.List;
 
 @Entity
 //@Table(name = "owner")
-@Inheritance(strategy = InheritanceType.JOINED)
+//@Inheritance(strategy = InheritanceType.JOINED)
+@PrimaryKeyJoinColumn(name = "id")
 //@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.)
-public abstract class Owner implements IOwner, Serializable {
+public abstract class Owner extends User implements IOwner, Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonManagedReference
-    private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @JsonManagedReference
+//    private Long id;
 
     private String name;
     @Enumerated(EnumType.STRING)
@@ -28,9 +32,11 @@ public abstract class Owner implements IOwner, Serializable {
 
     @JsonBackReference
     @OneToMany(mappedBy = "primaryOwner", fetch = FetchType.EAGER/*, orphanRemoval = true*/)
+    @Fetch(FetchMode.SUBSELECT)
     private List<Account> primaryAccounts;
     @JsonBackReference
     @OneToMany(mappedBy = "secondaryOwner", fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     private List<Account> secondaryAccounts;
 
 
@@ -45,13 +51,13 @@ public abstract class Owner implements IOwner, Serializable {
     }
 
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+//    public Long getId() {
+//        return id;
+//    }
+//
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
 
     public String getName() {
         return name;
@@ -97,5 +103,22 @@ public abstract class Owner implements IOwner, Serializable {
             return;
         secondaryAccounts.add(account);
         account.setSecondaryOwner(this);
+    }
+
+    @Override
+    public Boolean hasAccountAccess(Long idAccount) {
+        // look for the account id in the primary accounts
+        // this would be better with a HashTable.containsKey...
+        for(Account account : primaryAccounts)
+            if (account.getId() == idAccount)
+                return true;
+
+        // look for the account id in the primary accounts
+        for(Account account : secondaryAccounts)
+            if (account.getId() == idAccount)
+                return true;
+
+        // no luck
+        return false;
     }
 }

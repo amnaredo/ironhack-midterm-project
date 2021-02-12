@@ -1,12 +1,16 @@
 package com.ironhack.bankingsystem.model.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonManagedReference
     private Long id;
     private String username;
     private String password;
@@ -53,5 +57,9 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Boolean hasAccountAccess(Long idAccount) {
+        return false;
     }
 }

@@ -1,16 +1,14 @@
 package com.ironhack.bankingsystem.model.user;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
-public class Admin {
+@PrimaryKeyJoinColumn(name = "id")
+public class Admin extends User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
 
     private String name;
 
@@ -22,13 +20,13 @@ public class Admin {
         this.name = name;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+//    public Long getId() {
+//        return id;
+//    }
+//
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
 
     public String getName() {
         return name;
@@ -36,5 +34,10 @@ public class Admin {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public Boolean hasAccountAccess(Long idAccount) {
+        return true;
     }
 }
