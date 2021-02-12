@@ -5,6 +5,7 @@ import com.ironhack.bankingsystem.model.account.Account;
 import com.ironhack.bankingsystem.model.account.CheckingAccount;
 import com.ironhack.bankingsystem.model.account.CreditCardAccount;
 import com.ironhack.bankingsystem.model.account.SavingsAccount;
+import com.ironhack.bankingsystem.security.CustomUserDetails;
 
 
 import java.util.List;
@@ -17,6 +18,7 @@ public interface IAccountService {
 
     Boolean existsAccount(Long id);
     Account getAccountById(Long id);
+    Account getAccountByIdWithAuth(CustomUserDetails userDetails, Long id);
 
     List<Account> getAccountsByOwner(Long idOwner);
 
@@ -24,7 +26,7 @@ public interface IAccountService {
     SavingsAccount addSavings(SavingsAccountDTO savingsAccountDTO, Long id, Optional<Long> otherId);
     CreditCardAccount addCreditCard(CreditCardAccountDTO creditCardAccountDTO, Long id, Optional<Long> otherId);
 
-    Account startMoneyTransfer(MoneyTransferDTO moneyTransferDTO, Long id);
+    Account startMoneyTransfer(CustomUserDetails userDetails, MoneyTransferDTO moneyTransferDTO, Long id);
 
     void updateBalance(NewBalanceDTO newBalanceDTO, Long id);
 

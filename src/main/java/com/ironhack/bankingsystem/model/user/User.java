@@ -1,5 +1,7 @@
 package com.ironhack.bankingsystem.model.user;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ironhack.bankingsystem.model.user.enums.Type;
 
@@ -13,10 +15,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonManagedReference
     private Long id;
+    //@JsonIgnore
     private String username;
+    //@JsonIgnore
     private String password;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    //@JsonIgnore
     private Set<Role> roles;
 
     @Enumerated(EnumType.STRING)

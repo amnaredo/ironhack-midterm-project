@@ -9,6 +9,8 @@ import com.ironhack.bankingsystem.model.user.enums.Type;
 import com.ironhack.bankingsystem.model.user.impl.AccountHolder;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
 import com.ironhack.bankingsystem.repository.account.*;
+import com.ironhack.bankingsystem.repository.user.OwnerRepository;
+import com.ironhack.bankingsystem.security.CustomUserDetails;
 import com.ironhack.bankingsystem.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,14 +26,14 @@ import java.util.Optional;
 public class AccountService implements IAccountService {
 
     @Autowired
-    private IOwnerService ownerService;
-    @Autowired
     private IMoneyTransferService moneyTransferService;
     @Autowired
-    private ITransactionService transactionService;
-    @Autowired
     private IInterestsFeesService interestsFeesService;
+    @Autowired
+    private IAuthService authService;
 
+    @Autowired
+    private OwnerRepository ownerRepository;
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
@@ -43,6 +45,7 @@ public class AccountService implements IAccountService {
     @Autowired
     private CreditCardAccountRepository creditCardAccountRepository;
 
+
     public List<Account> getAccounts() {
         return accountRepository.findAll();
     }
@@ -52,16 +55,21 @@ public class AccountService implements IAccountService {
     }
 
     public Account getAccountById(Long id) {
+        if (!accountRepository.existsById(id))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
+        return accountRepository.findById(id).get();
+    }
+
+    public Account getAccountByIdWithAuth(CustomUserDetails userDetails, Long id) {
         if(!accountRepository.existsById(id))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
 
-        // access the account
+        // authorize access
+        if (!authService.authAccountAccess(userDetails, id))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access denied");
+
+        // get the account
         Account account = accountRepository.findById(id).get();
-
-
-        // todo security checks (maybe at the controller...)
-        //      -> the logged user owns the account id?
-
 
         // apply interests/fees
         interestsFeesService.applyInterestsFeesService(account);
@@ -73,8 +81,10 @@ public class AccountService implements IAccountService {
     }
 
     public List<Account> getAccountsByOwner(Long idOwner) {
-        Owner owner = ownerService.getOwnerById(idOwner).get();
+        if (!ownerRepository.existsById(idOwner))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id not valid");
 
+        Owner owner = ownerRepository.findById(idOwner).get();
         return accountRepository.findByPrimaryOwnerOrSecondaryOwner(owner, owner);
     }
 
@@ -95,12 +105,12 @@ public class AccountService implements IAccountService {
 
     public CheckingAccount addChecking(CheckingAccountDTO checkingAccountDTO, Long id, Optional<Long> otherId) {
 
-        if (!ownerService.existsOwner(id) || (otherId.isPresent() && !ownerService.existsOwner(otherId.get())))
+        if (!ownerRepository.existsById(id) || (otherId.isPresent() && !ownerRepository.existsById(otherId.get())))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id not valid");
 
-        Owner owner = ownerService.getOwnerById(id).get();
+        Owner owner = ownerRepository.findById(id).get();
         Owner otherOwner =
-                otherId.isPresent() ? ownerService.getOwnerById(otherId.get()).get() : null;
+                otherId.isPresent() ? ownerRepository.findById(otherId.get()).get() : null;
 
         if (owner.getType().equals(Type.ACCOUNT_HOLDER)) {
 
@@ -131,11 +141,13 @@ public class AccountService implements IAccountService {
     }
 
     public SavingsAccount addSavings(SavingsAccountDTO savingsAccountDTO, Long id, Optional<Long> otherId) {
-        if (!ownerService.existsOwner(id) || (otherId.isPresent() && !ownerService.existsOwner(otherId.get())))
+
+        if (!ownerRepository.existsById(id) || (otherId.isPresent() && !ownerRepository.existsById(otherId.get())))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id not valid");
 
-        Owner owner = ownerService.getOwnerById(id).get();
-        Owner otherOwner = otherId.isPresent() ? ownerService.getOwnerById(otherId.get()).get() : null;
+        Owner owner = ownerRepository.findById(id).get();
+        Owner otherOwner =
+                otherId.isPresent() ? ownerRepository.findById(otherId.get()).get() : null;
 
         SavingsAccount savingsAccount = new SavingsAccount();
         savingsAccount.setPrimaryOwner(owner);
@@ -149,11 +161,13 @@ public class AccountService implements IAccountService {
     }
 
     public CreditCardAccount addCreditCard(CreditCardAccountDTO creditCardAccountDTO, Long id, Optional<Long> otherId) {
-        if (!ownerService.existsOwner(id) || (otherId.isPresent() && !ownerService.existsOwner(otherId.get())))
+
+        if (!ownerRepository.existsById(id) || (otherId.isPresent() && !ownerRepository.existsById(otherId.get())))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id not valid");
 
-        Owner owner = ownerService.getOwnerById(id).get();
-        Owner otherOwner = otherId.isPresent() ? ownerService.getOwnerById(otherId.get()).get() : null;
+        Owner owner = ownerRepository.findById(id).get();
+        Owner otherOwner =
+                otherId.isPresent() ? ownerRepository.findById(otherId.get()).get() : null;
 
         CreditCardAccount creditCardAccount = new CreditCardAccount();
         creditCardAccount.setPrimaryOwner(owner);
@@ -165,7 +179,7 @@ public class AccountService implements IAccountService {
         return saveCreditCardAccount(creditCardAccount);
     }
 
-    public Account startMoneyTransfer(MoneyTransferDTO moneyTransferDTO, Long id) {
+    public Account startMoneyTransfer(CustomUserDetails userDetails, MoneyTransferDTO moneyTransferDTO, Long id) {
 
         // check the existence of the referenced accounts
         if(!existsAccount(id))
@@ -173,7 +187,11 @@ public class AccountService implements IAccountService {
         if(!existsAccount(moneyTransferDTO.getToAccountId()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Destination account not found");
 
-        Account account = getAccountById(id);
+        // check the accounts are not the same
+        if(id.equals(moneyTransferDTO.getToAccountId()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Origin and destination accounts can't match");
+
+        Account account = accountRepository.findById(id).get();
 
         // check the name of the author (it's name is the primary or secondary owner's)
         String primaryName = account.getPrimaryOwner().getName();
@@ -182,7 +200,7 @@ public class AccountService implements IAccountService {
         String transferName = moneyTransferDTO.getName();
 
         if (!transferName.equalsIgnoreCase(primaryName) && !transferName.equalsIgnoreCase(secondaryName))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name provided does not match with the account owner");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name provided does not match with owner's name");
 
 
         // everything ok, next checks are MoneyTransferService responsibility
@@ -195,9 +213,8 @@ public class AccountService implements IAccountService {
         if(!existsAccount(id))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account not found");
 
-        Account account = getAccountById(id);
+        Account account = accountRepository.findById(id).get();
         account.setBalance(new Money(newBalanceDTO.getBalance()));
-
         saveAccount(account);
     }
 

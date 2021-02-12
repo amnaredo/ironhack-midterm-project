@@ -22,25 +22,25 @@ public class OwnerController implements IOwnerController {
     @Autowired
     private IOwnerService ownerService;
 
-    @GetMapping("/owners")
+    @GetMapping("/bank/users/owners")
     @ResponseStatus(HttpStatus.OK)
     public List<Owner> getOwners() {
         return ownerService.getOwners();
     }
 
-    @GetMapping("/owners/{id}")
+    @GetMapping("/bank/users/owners/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Owner getOwnerById(@PathVariable("id") @NumberFormat @Min(1) Long id) {
         return ownerService.getOwnerById(id).get();
     }
 
-    @PostMapping("/owners/ah")
+    @PostMapping("/bank/users/owners/ah")
     @ResponseStatus(HttpStatus.CREATED)
     public AccountHolder addAccountHolder(@RequestBody @Valid AccountHolderDTO accountHolderDTO) {
         return ownerService.addAccountHolder(accountHolderDTO);
     }
 
-    @PostMapping("/owners/tpu")
+    @PostMapping("/bank/users/owners/tpu")
     @ResponseStatus(HttpStatus.CREATED)
     public ThirdPartyUser addThirdPartyUser(@RequestBody @Valid ThirdPartyUserDTO thirdPartyUserDTO) {
         return ownerService.addThirdPartyUser(thirdPartyUserDTO);

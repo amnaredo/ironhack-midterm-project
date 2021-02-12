@@ -6,11 +6,13 @@ import com.ironhack.bankingsystem.model.account.Account;
 import com.ironhack.bankingsystem.model.account.CheckingAccount;
 import com.ironhack.bankingsystem.model.account.CreditCardAccount;
 import com.ironhack.bankingsystem.model.account.SavingsAccount;
+import com.ironhack.bankingsystem.security.CustomUserDetails;
 import com.ironhack.bankingsystem.service.interfaces.IAccountService;
 import com.ironhack.bankingsystem.service.interfaces.IAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,13 +29,13 @@ public class AccountController implements IAccountController {
     @Autowired
     private IAuthService authService;
 
-    @GetMapping("/accounts")
+    @GetMapping("/bank/accounts")
     @ResponseStatus(HttpStatus.OK)
     public List<Account> getAccounts() {
         return accountService.getAccounts();
     }
 
-    @GetMapping("/accounts/{id}")
+    @GetMapping("/bank/accounts/{id}")
     public Account getAccount(
             @PathVariable
             @NumberFormat
@@ -42,13 +44,24 @@ public class AccountController implements IAccountController {
         return accountService.getAccountById(id);
     }
 
-    @GetMapping("/owners/{id}/accounts")
+    @GetMapping("/accounts/{id}")
+    public Account getAccount(
+            @AuthenticationPrincipal
+            CustomUserDetails userDetails,
+            @PathVariable
+            @NumberFormat
+            @Min(1)
+            Long id) {
+        return accountService.getAccountByIdWithAuth(userDetails, id);
+    }
+
+    @GetMapping("/bank/users/owners/{id}/accounts")
     @ResponseStatus(HttpStatus.OK)
     public List<Account> getAccountsByOwner(@PathVariable("id") @NumberFormat @Min(1) Long id) {
         return accountService.getAccountsByOwner(id);
     }
 
-    @PostMapping("/accounts/checking/{id}")
+    @PostMapping("/bank/accounts/checking/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public CheckingAccount addChecking(
             @RequestBody
@@ -61,7 +74,7 @@ public class AccountController implements IAccountController {
         return accountService.addChecking(checkingAccountDTO, id, Optional.empty());
     }
 
-    @PostMapping("/accounts/checking/{id1}/{id2}")
+    @PostMapping("/bank/accounts/checking/{id1}/{id2}")
     @ResponseStatus(HttpStatus.CREATED)
     public CheckingAccount addChecking(
             @RequestBody
@@ -79,7 +92,7 @@ public class AccountController implements IAccountController {
     }
 
 
-    @PostMapping("/accounts/savings/{id}")
+    @PostMapping("/bank/accounts/savings/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public SavingsAccount addSavings(
             @RequestBody
@@ -92,7 +105,7 @@ public class AccountController implements IAccountController {
         return accountService.addSavings(savingsAccountDTO, id, Optional.empty());
     }
 
-    @PostMapping("/accounts/savings/{id1}/{id2}")
+    @PostMapping("/bank/accounts/savings/{id1}/{id2}")
     @ResponseStatus(HttpStatus.CREATED)
     public SavingsAccount addSavings(
             @RequestBody
@@ -110,7 +123,7 @@ public class AccountController implements IAccountController {
     }
 
 
-    @PostMapping("/accounts/creditcard/{id}")
+    @PostMapping("/bank/accounts/creditcard/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public CreditCardAccount addCreditCard(
             @RequestBody
@@ -123,7 +136,7 @@ public class AccountController implements IAccountController {
         return accountService.addCreditCard(creditCardAccountDTO, id, Optional.empty());
     }
 
-    @PostMapping("/accounts/creditcard/{id1}/{id2}")
+    @PostMapping("/bank/accounts/creditcard/{id1}/{id2}")
     @ResponseStatus(HttpStatus.CREATED)
     public CreditCardAccount addCreditCard(
             @RequestBody
@@ -141,9 +154,11 @@ public class AccountController implements IAccountController {
     }
 
 
-    @PostMapping(value = "/accounts/{id}")
+    @PostMapping("/accounts/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public Account transferMoney(
+            @AuthenticationPrincipal
+            CustomUserDetails userDetails,
             @RequestHeader(value = "Hashed-Key", required = false)
             String token,
             @RequestBody
@@ -154,12 +169,12 @@ public class AccountController implements IAccountController {
             @Min(1)
             Long id) {
 
-        authService.authMoneyTransfer(token, moneyTransferDTO, id);
-        return accountService.startMoneyTransfer(moneyTransferDTO, id);
+        authService.authMoneyTransfer(userDetails, token, moneyTransferDTO, id);
+        return accountService.startMoneyTransfer(userDetails, moneyTransferDTO, id);
     }
 
 
-    @PatchMapping("/accounts/{id}")
+    @PatchMapping("/bank/accounts/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateBalance(
             @RequestBody

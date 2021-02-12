@@ -3,6 +3,7 @@ package com.ironhack.bankingsystem.security;
 
 import com.ironhack.bankingsystem.model.user.Role;
 import com.ironhack.bankingsystem.model.user.User;
+import com.ironhack.bankingsystem.model.user.enums.Type;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -60,7 +61,11 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 
-    public boolean hasAccountAccess(Long idAccount) {
-        return user.hasAccountAccess(idAccount);
+    public Type getType() {
+        return user.getType();
+    }
+
+    public User getUser() {
+        return user;
     }
 }

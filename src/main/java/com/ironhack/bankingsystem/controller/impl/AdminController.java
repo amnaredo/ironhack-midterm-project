@@ -22,25 +22,25 @@ public class AdminController implements IAdminController {
     @Autowired
     private OwnerService ownerService;
 
-    @GetMapping("/users")
+    @GetMapping("/bank/users")
     @ResponseStatus(HttpStatus.OK)
     public List<User> getUsers() {
         return adminService.getUsers();
     }
 
-    @GetMapping("/users/owners")
-    @ResponseStatus(HttpStatus.OK)
-    public List<Owner> getOwners() {
-        return ownerService.getOwners();
-    }
+//    @GetMapping("/bank/users/owners")
+//    @ResponseStatus(HttpStatus.OK)
+//    public List<Owner> getOwners() {
+//        return ownerService.getOwners();
+//    }
 
-    @GetMapping("/users/admins")
+    @GetMapping("/bank/users/admins")
     @ResponseStatus(HttpStatus.OK)
     public List<Admin> getAdmins() {
         return adminService.getAdmins();
     }
 
-    @PostMapping("/users/admins")
+    @PostMapping("/bank/users/admins")
     @ResponseStatus(HttpStatus.CREATED)
     public Admin addAdmin(@RequestBody @Valid UserDTO userDto) {
         return adminService.addAdmin(userDto);

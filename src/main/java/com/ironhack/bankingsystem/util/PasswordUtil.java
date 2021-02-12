@@ -2,12 +2,11 @@ package com.ironhack.bankingsystem.util;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 
 public class PasswordUtil {
 
     public static String encryptPassword(String plainPassword) {
-        PasswordEncoder passwordEncoder = new Pbkdf2PasswordEncoder();
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.encode(plainPassword);
     }
 

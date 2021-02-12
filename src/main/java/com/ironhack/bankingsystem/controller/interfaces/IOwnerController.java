@@ -10,10 +10,15 @@ import java.util.List;
 
 public interface IOwnerController {
 
+    // GET /owners
     List<Owner> getOwners();
 
+    // POST /owners/ah
     AccountHolder addAccountHolder(AccountHolderDTO accountHolderDTO);
+
+    // POST /owners/tpu
     ThirdPartyUser addThirdPartyUser(ThirdPartyUserDTO thirdPartyUserDTO);
 
+    // GET /owners/{id}
     Owner getOwnerById(Long id);
 }

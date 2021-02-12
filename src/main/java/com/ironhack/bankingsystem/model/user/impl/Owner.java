@@ -104,21 +104,4 @@ public abstract class Owner extends User implements IOwner, Serializable {
         secondaryAccounts.add(account);
         account.setSecondaryOwner(this);
     }
-
-    @Override
-    public Boolean hasAccountAccess(Long idAccount) {
-        // look for the account id in the primary accounts
-        // this would be better with a HashTable.containsKey...
-        for(Account account : primaryAccounts)
-            if (account.getId() == idAccount)
-                return true;
-
-        // look for the account id in the primary accounts
-        for(Account account : secondaryAccounts)
-            if (account.getId() == idAccount)
-                return true;
-
-        // no luck
-        return false;
-    }
 }

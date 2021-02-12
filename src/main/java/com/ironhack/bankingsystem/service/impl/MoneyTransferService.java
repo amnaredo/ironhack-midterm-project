@@ -42,7 +42,7 @@ public class MoneyTransferService implements IMoneyTransferService {
 
         // check if penalty fee has to be deducted later
         BigDecimal result = currentBalance.subtract(transferAmount);
-        Boolean applyPenaltyFee =
+        boolean applyPenaltyFee =
                 currentBalance.compareTo(origin.getMinimumBalance().getAmount()) > 0 &&
                 result.compareTo(origin.getMinimumBalance().getAmount()) < 0;
 
@@ -58,9 +58,6 @@ public class MoneyTransferService implements IMoneyTransferService {
 
         // deduct penalty fee with another transaction if needed
         if (applyPenaltyFee) {
-//            try {
-//                Thread.sleep(2000L); // wait 2 seconds to avoid fraud detection
-//            } catch (Exception e) { }
 
             Transaction deductionTransaction = new Transaction(origin.getPenaltyFee());
             transaction.setType(Type.PENALTY_FEE);

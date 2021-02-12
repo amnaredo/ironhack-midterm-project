@@ -35,9 +35,4 @@ public class Admin extends User {
     public void setName(String name) {
         this.name = name;
     }
-
-    @Override
-    public Boolean hasAccountAccess(Long idAccount) {
-        return true;
-    }
 }

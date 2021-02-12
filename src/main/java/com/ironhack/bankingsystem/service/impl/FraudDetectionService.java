@@ -5,6 +5,7 @@ import com.ironhack.bankingsystem.model.account.Account;
 import com.ironhack.bankingsystem.model.account.enums.Status;
 import com.ironhack.bankingsystem.model.account.interfaces.WithStatus;
 import com.ironhack.bankingsystem.model.transaction.Transaction;
+import com.ironhack.bankingsystem.repository.account.AccountRepository;
 import com.ironhack.bankingsystem.repository.transaction.TransactionRepository;
 import com.ironhack.bankingsystem.service.interfaces.IFraudDetectionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ public class FraudDetectionService implements IFraudDetectionService {
 
     @Autowired
     private TransactionRepository transactionRepository;
+    @Autowired
+    private AccountRepository accountRepository;
 
 
 //    public void checkMoneyTransfer(Account account, MoneyTransferDTO moneyTransferDTO) {
@@ -91,6 +94,7 @@ public class FraudDetectionService implements IFraudDetectionService {
         // check the condition
         if (numberOfTransactionsInThisSecond >= 2){
             ((WithStatus)account).setStatus(Status.FROZEN);
+            accountRepository.save(account);
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Account frozen: too many transactions");
         }
 
@@ -111,6 +115,7 @@ public class FraudDetectionService implements IFraudDetectionService {
         if (highestDailyTotal.compareTo(BigDecimal.ZERO) > 0 &&
             newTodayTotal.compareTo(highestDailyTotal.multiply(BigDecimal.valueOf(1.5))) > 0) {
             ((WithStatus)account).setStatus(Status.FROZEN);
+            accountRepository.save(account);
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Account frozen: suspected fraud");
         }
     }

@@ -8,8 +8,16 @@ import com.ironhack.bankingsystem.model.user.impl.Owner;
 import java.util.List;
 
 public interface IAdminController {
+
+    // GET /users/admins
     List<Admin> getAdmins();
-    List<Owner> getOwners();
+
+//    // GET /users/owners
+//    List<Owner> getOwners();
+
+    // GET /users
     List<User> getUsers();
+
+    // POST /users/admins
     Admin addAdmin(UserDTO userDto);
 }
