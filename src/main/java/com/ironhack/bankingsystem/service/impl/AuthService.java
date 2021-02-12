@@ -2,7 +2,9 @@ package com.ironhack.bankingsystem.service.impl;
 
 import com.ironhack.bankingsystem.dto.account.MoneyTransferDTO;
 import com.ironhack.bankingsystem.model.account.Account;
+import com.ironhack.bankingsystem.model.account.enums.Status;
 import com.ironhack.bankingsystem.model.account.interfaces.WithSecretKey;
+import com.ironhack.bankingsystem.model.account.interfaces.WithStatus;
 import com.ironhack.bankingsystem.model.user.enums.Type;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
 import com.ironhack.bankingsystem.model.user.impl.ThirdPartyUser;
@@ -35,6 +37,8 @@ public class AuthService implements IAuthService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You don't have access to this account");
 
         Account account = accountService.getAccountById(accountId);
+
+
         // todo
         //  get the type of the user who is transfering money...
         //  /*UserDetails userDetails,*/

@@ -144,7 +144,7 @@ public class AccountController implements IAccountController {
     @PostMapping(value = "/accounts/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public Account transferMoney(
-            @RequestHeader(value = "HashedKey", required = false)
+            @RequestHeader(value = "Hashed-Key", required = false)
             String token,
             @RequestBody
             @Valid

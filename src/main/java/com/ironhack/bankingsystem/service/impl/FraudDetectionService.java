@@ -74,6 +74,11 @@ public class FraudDetectionService implements IFraudDetectionService {
         if (!WithStatus.class.isAssignableFrom(account.getClass()))
             return;
 
+        // check the account is not frozen
+        if (((WithStatus)account).getStatus().equals(Status.FROZEN))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Account is frozen due to suspected fraud");
+
+
         // More than 2 transactions occurring on a single account within a 1 second period.
 
         // get the number of transactions of this account in the last second
@@ -86,7 +91,7 @@ public class FraudDetectionService implements IFraudDetectionService {
         // check the condition
         if (numberOfTransactionsInThisSecond >= 2){
             ((WithStatus)account).setStatus(Status.FROZEN);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account frozen: too many transactions");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Account frozen: too many transactions");
         }
 
         // Transactions made in 24 hours that total to more than 150% of the customers highest daily total transactions
@@ -106,7 +111,7 @@ public class FraudDetectionService implements IFraudDetectionService {
         if (highestDailyTotal.compareTo(BigDecimal.ZERO) > 0 &&
             newTodayTotal.compareTo(highestDailyTotal.multiply(BigDecimal.valueOf(1.5))) > 0) {
             ((WithStatus)account).setStatus(Status.FROZEN);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account frozen: suspected fraud");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Account frozen: suspected fraud");
         }
     }
 

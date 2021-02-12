@@ -3,6 +3,8 @@ package com.ironhack.bankingsystem.service.impl;
 import com.ironhack.bankingsystem.dto.account.*;
 import com.ironhack.bankingsystem.model.Money;
 import com.ironhack.bankingsystem.model.account.*;
+import com.ironhack.bankingsystem.model.account.enums.Status;
+import com.ironhack.bankingsystem.model.account.interfaces.WithStatus;
 import com.ironhack.bankingsystem.model.user.enums.Type;
 import com.ironhack.bankingsystem.model.user.impl.AccountHolder;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
@@ -171,8 +173,9 @@ public class AccountService implements IAccountService {
         if(!existsAccount(moneyTransferDTO.getToAccountId()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Destination account not found");
 
-        // check the name of the author (it's name is the primary or secondary owner's)
         Account account = getAccountById(id);
+
+        // check the name of the author (it's name is the primary or secondary owner's)
         String primaryName = account.getPrimaryOwner().getName();
         String secondaryName = account.hasSecondaryOwner() ? account.getSecondaryOwner().getName() : "";
 
@@ -180,6 +183,7 @@ public class AccountService implements IAccountService {
 
         if (!transferName.equalsIgnoreCase(primaryName) && !transferName.equalsIgnoreCase(secondaryName))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name provided does not match with the account owner");
+
 
         // everything ok, next checks are MoneyTransferService responsibility
         account = moneyTransferService.doMoneyTransfer(moneyTransferDTO, id);

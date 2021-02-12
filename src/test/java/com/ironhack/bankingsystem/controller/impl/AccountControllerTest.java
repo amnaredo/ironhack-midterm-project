@@ -348,7 +348,7 @@ class AccountControllerTest {
                 mockMvc.perform(
                         post("/accounts/" + fromAccount.getId())
 
-                                .header("HashedKey", "hashedKey")
+                                .header("Hashed-Key", "hashedKey")
                                 .content(body)
                                 .contentType(MediaType.APPLICATION_JSON))
 //                        .andDo(MockMvcResultHandlers.print())
