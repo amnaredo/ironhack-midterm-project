@@ -426,4 +426,39 @@ class AccountControllerTest {
                         .andExpect(status().isNoContent())
                         .andReturn();
     }
+
+    @Test
+    @WithMockUser(username = "mister", password = "mister", roles = {"OWNER"})
+    void getAccountWithAuth() throws Exception {
+        List<Owner> owners = ownerRepository.findAll();
+        Long idOwner = owners.get(0).getId();
+        Account account = owners.get(0).getPrimaryAccounts().get(0);
+
+        CustomUserDetails customUserDetails = new CustomUserDetails(owners.get(0));
+
+        MvcResult result =
+                mockMvc.perform(
+                        get("/accounts/" + account.getId())
+                                .with(user(customUserDetails)))
+                        .andExpect(status().isOk())
+                        .andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = "mistress", password = "mistress", roles = {"OWNER"})
+    void getAccountWithAuth_notOwner() throws Exception {
+        List<Owner> owners = ownerRepository.findAll();
+        Long idOwner = owners.get(0).getId();
+        Account account = owners.get(0).getPrimaryAccounts().get(1);
+
+        CustomUserDetails customUserDetails = new CustomUserDetails(owners.get(1));
+
+        MvcResult result =
+                mockMvc.perform(
+                        get("/accounts/" + account.getId())
+                                .with(user(customUserDetails)))
+                        .andExpect(status().isUnauthorized())
+                        .andReturn();
+    }
+
 }
