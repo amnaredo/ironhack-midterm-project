@@ -51,7 +51,7 @@ class TransactionRepositoryTest {
         transactionRepository.save(transaction1);
 
         Transaction transaction = new Transaction(checkingAccount, savingsAccount, new Money(BigDecimal.valueOf(100L)), "Alejandro Martínez Naredo", "Esto es una prueba");
-        transactionRepository.save(transaction);
+        transactionRepository.saveAndFlush(transaction);
 
 
         Transaction transactionThreeDaysAgo = new Transaction(checkingAccount, savingsAccount, new Money(BigDecimal.valueOf(100L)), "Alejandro Martínez Naredo", "Esto es una prueba");
