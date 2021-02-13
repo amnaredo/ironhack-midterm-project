@@ -1,5 +1,5 @@
-## REST API with Spring Boot
-#### Banking System
+# REST API with Spring Boot
+### Banking System
 
 This project features a banking system backend implementation. 
 It's based in Java, using the Spring Boot lightweight infrastructure with Spring JPA + Hibernate and Spring Security.
@@ -14,9 +14,9 @@ Some additional features are:
  - Automated interests and fees application 
  - Secured and admin based management
  
-#### API Specification
+### API Specification
  
-##### Admin only
+#### Admin only
 ```
 /bank/users
 ```
@@ -84,7 +84,7 @@ Some additional features are:
  ```
  - `GET`  Read list of all transactions
  
-##### Auth owner
+#### Auth owner
  ``` 
  /accounts/{id}
  ``` 
