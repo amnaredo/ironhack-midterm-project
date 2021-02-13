@@ -17,99 +17,81 @@ Some additional features are:
 #### API Specification
  
 ##### Admin only
- 
-    /bank/users
-
+```
+/bank/users
+```
  - `GET` Read list of all users
- 
-    
-    /bank/users/admins
-
+``` 
+/bank/users/admins
+```
  - `GET` Read list of all admins
 
  - `POST` Create new admin user 
-
-
-    /bank/users/owners
-
+```
+/bank/users/owners
+```
  - `GET` Read list of all owners
- 
- 
-    /bank/users/owners/ah
- 
+ ```
+/bank/users/owners/ah
+``` 
  - `POST` Create new account holder
- 
- 
-    /bank/users/owners/tpu
- 
+```
+/bank/users/owners/tpu
+``` 
  - `POST` Create new third party user
- 
- 
-    /bank/users/owners/{id}
- 
+ ```
+/bank/users/owners/{id}
+``` 
  - `GET` Read owner
- 
- 
-    /bank/users/owners/{id}/accounts
- 
+ ```
+/bank/users/owners/{id}/accounts
+``` 
  - `GET` Read accounts of an owner
- 
- 
-    /bank/accounts
- 
+ ```
+/bank/accounts
+``` 
  - `GET` Read list of all accounts
- 
- 
-    /bank/accounts/{id}
- 
+ ```
+/bank/accounts/{id}
+ ``` 
  - `PATCH` Update balance of the account
- 
- 
-    /bank/accounts/checking/{id}
- 
+ ```
+/bank/accounts/checking/{id}
+ ``` 
  - `POST` Create new checking account with owner
- 
- 
-    /bank/accounts/checking/{id}/{id}
- 
+ ```
+/bank/accounts/checking/{id}/{id}
+ ``` 
  - `POST` Create new checking account with two owners
- 
- 
-    /bank/accounts/savings/{id}
- 
+ ```
+/bank/accounts/savings/{id}
+ ``` 
  - `POST` Create new savings account with owner
- 
- 
-    /bank/accounts/savings/{id}/{id}
- 
+ ```
+ /bank/accounts/savings/{id}/{id}
+ ```
  - `POST` Create new savings account with two owners
- 
- 
-    /bank/accounts/creditcard/{id}
- 
+ ```
+ /bank/accounts/creditcard/{id}
+ ```
  - `POST` Create new credit card account with owner
- 
- 
-    /bank/accounts/creditcard/{id}/{id}
- 
+ ```
+ /bank/accounts/creditcard/{id}/{id}
+ ```
  - `POST` Create new credit card account with two owners
- 
- 
-    /bank/transactions
- 
+ ```
+ /bank/transactions
+ ```
  - `GET`  Read list of all transactions
  
- 
-
 ##### Auth owner
- 
-    /accounts/{id}
- 
+ ``` 
+ /accounts/{id}
+ ``` 
  - `GET`  Read account
 
  - `POST` Create money transfer from account
-
-
-    /accounts/{id}/transactions
- 
+ ```
+ /accounts/{id}/transactions
+ ```
  - `GET`  Read list of all transactions of account
