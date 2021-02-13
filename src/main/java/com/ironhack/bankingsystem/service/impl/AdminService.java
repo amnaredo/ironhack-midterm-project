@@ -12,10 +12,7 @@ import com.ironhack.bankingsystem.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class AdminService implements IAdminService {
@@ -39,7 +36,7 @@ public class AdminService implements IAdminService {
         admin.setUsername(userDTO.getUsername());
         admin.setPassword(PasswordUtil.encryptPassword(userDTO.getPassword()));
         admin.setName(userDTO.getName());
-        Set<Role> roleSet = new HashSet<Role>(Arrays.asList(new Role("ADMIN", admin)));
+        Set<Role> roleSet = new HashSet<Role>(Collections.singletonList(new Role("ADMIN", admin)));
         admin.setRoles(roleSet);
         return adminRepository.save(admin);
     }
