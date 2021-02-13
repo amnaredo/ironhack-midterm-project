@@ -3,6 +3,7 @@ package com.ironhack.bankingsystem.model.user.impl;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ironhack.bankingsystem.model.account.Account;
+import com.ironhack.bankingsystem.model.user.Role;
 import com.ironhack.bankingsystem.model.user.User;
 import com.ironhack.bankingsystem.model.user.enums.Type;
 import com.ironhack.bankingsystem.model.user.interfaces.IOwner;
@@ -12,6 +13,8 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 @Entity
@@ -43,6 +46,8 @@ public abstract class Owner extends User implements IOwner, Serializable {
     public Owner() {
         primaryAccounts = new ArrayList<>();
         secondaryAccounts = new ArrayList<>();
+
+        this.setRoles(new HashSet<Role>(Collections.singletonList(new Role("OWNER", this))));
     }
 
     public Owner(String name) {

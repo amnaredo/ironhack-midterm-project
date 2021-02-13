@@ -11,6 +11,7 @@ public class ThirdPartyUser extends Owner {
     private String hashedKey;
 
     public ThirdPartyUser() {
+        super();
         this.setType(Type.THIRD_PARTY_USER);
     }
 

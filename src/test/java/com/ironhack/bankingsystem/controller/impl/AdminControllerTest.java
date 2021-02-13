@@ -43,13 +43,9 @@ class AdminControllerTest {
     private WebApplicationContext webApplicationContext;
 
     @Autowired
-    private IAdminService service;
-    @Autowired
     private AccountRepository accountRepository;
     @Autowired
     private OwnerRepository ownerRepository;
-    @Autowired
-    private TransactionRepository repository;
     @Autowired
     private AdminRepository adminRepository;
 
@@ -80,6 +76,7 @@ class AdminControllerTest {
         ah2.setUsername("mistress");
         ah2.setPassword("mistress");
         ah2.setRoles(new HashSet<Role>(Collections.singletonList(new Role("OWNER", ah2))));
+
         ownerRepository.saveAll(List.of(ah, ah2));
 
         Admin admin = new Admin();

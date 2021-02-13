@@ -1,10 +1,13 @@
 package com.ironhack.bankingsystem.model.user.impl;
 
 import com.ironhack.bankingsystem.model.user.Address;
+import com.ironhack.bankingsystem.model.user.Role;
 import com.ironhack.bankingsystem.model.user.enums.Type;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.HashSet;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
@@ -32,6 +35,7 @@ public class AccountHolder extends Owner {
 
 
     public AccountHolder() {
+        super();
         this.setType(Type.ACCOUNT_HOLDER);
     }
 
