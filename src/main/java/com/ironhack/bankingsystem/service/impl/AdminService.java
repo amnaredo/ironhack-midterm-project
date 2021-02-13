@@ -32,12 +32,12 @@ public class AdminService implements IAdminService {
 
     public Admin addAdmin(UserDTO userDTO) {
         Admin admin = new Admin();
-        admin.setType(Type.ADMIN);
+        //admin.setType(Type.ADMIN);
         admin.setUsername(userDTO.getUsername());
         admin.setPassword(PasswordUtil.encryptPassword(userDTO.getPassword()));
         admin.setName(userDTO.getName());
-        Set<Role> roleSet = new HashSet<Role>(Collections.singletonList(new Role("ADMIN", admin)));
-        admin.setRoles(roleSet);
+        //Set<Role> roleSet = new HashSet<Role>(Collections.singletonList(new Role("ADMIN", admin)));
+        //admin.setRoles(roleSet);
         return adminRepository.save(admin);
     }
 }

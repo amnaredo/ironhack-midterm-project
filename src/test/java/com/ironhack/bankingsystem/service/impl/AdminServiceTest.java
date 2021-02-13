@@ -3,7 +3,6 @@ package com.ironhack.bankingsystem.service.impl;
 import com.ironhack.bankingsystem.dto.user.UserDTO;
 import com.ironhack.bankingsystem.model.user.Admin;
 import com.ironhack.bankingsystem.model.user.Role;
-import com.ironhack.bankingsystem.model.user.enums.Type;
 import com.ironhack.bankingsystem.model.user.impl.AccountHolder;
 import com.ironhack.bankingsystem.model.user.impl.Owner;
 import com.ironhack.bankingsystem.repository.user.AdminRepository;
@@ -16,8 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
@@ -41,8 +38,8 @@ class AdminServiceTest {
         admin.setName("Alejandro");
         admin.setUsername("admin");
         admin.setPassword("ironhack");
-        admin.setType(Type.ADMIN);
-        admin.setRoles(new HashSet<Role>(Collections.singletonList(new Role("ADMIN", admin))));
+        //admin.setType(Type.ADMIN);
+        //admin.setRoles(new HashSet<Role>(Collections.singletonList(new Role("ADMIN", admin))));
         adminRepository.save(admin);
 
         Owner owner = new AccountHolder();

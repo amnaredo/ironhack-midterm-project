@@ -87,7 +87,7 @@ public class OwnerService implements IOwnerService {
         // set user credentials
         accountHolder.setUsername(accountHolderDTO.getUsername());
         accountHolder.setPassword(PasswordUtil.encryptPassword(accountHolderDTO.getPassword()));
-        Set<Role> roleSet = new HashSet<Role>(Arrays.asList(new Role("OWNER", accountHolder)));
+        Set<Role> roleSet = new HashSet<Role>(Collections.singletonList(new Role("OWNER", accountHolder)));
         accountHolder.setRoles(roleSet);
 
         return saveAccountHolder(accountHolder);
@@ -112,7 +112,7 @@ public class OwnerService implements IOwnerService {
         // set user credentials
         thirdPartyUser.setUsername(thirdPartyUserDTO.getUsername());
         thirdPartyUser.setPassword(PasswordUtil.encryptPassword(thirdPartyUserDTO.getPassword()));
-        Set<Role> roleSet = new HashSet<Role>(Arrays.asList(new Role("OWNER", thirdPartyUser)));
+        Set<Role> roleSet = new HashSet<Role>(Collections.singletonList(new Role("OWNER", thirdPartyUser)));
         thirdPartyUser.setRoles(roleSet);
 
         return saveThirdPartyUser(thirdPartyUser);

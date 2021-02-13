@@ -1,6 +1,10 @@
 package com.ironhack.bankingsystem.model.user;
 
+import com.ironhack.bankingsystem.model.user.enums.Type;
+
 import javax.persistence.*;
+import java.util.Collections;
+import java.util.HashSet;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
@@ -14,6 +18,8 @@ public class Admin extends User {
 
 
     public Admin() {
+        this.setType(Type.ADMIN);
+        this.setRoles(new HashSet<Role>(Collections.singletonList(new Role("ADMIN", this))));
     }
 
     public Admin(String name) {
