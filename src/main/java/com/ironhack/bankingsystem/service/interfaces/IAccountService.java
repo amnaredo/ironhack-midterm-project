@@ -31,6 +31,4 @@ public interface IAccountService {
     void updateBalance(NewBalanceDTO newBalanceDTO, Long id);
 
     Account saveAccount(Account account);
-
-    void deleteAll();
 }

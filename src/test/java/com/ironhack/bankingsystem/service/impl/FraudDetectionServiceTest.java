@@ -32,15 +32,15 @@ import static org.junit.jupiter.api.Assertions.*;
 class FraudDetectionServiceTest {
 
     @Autowired
-    private IFraudDetectionService fraudDetectionService;
+    private IFraudDetectionService service;
 
     @Autowired
     private TransactionRepository transactionRepository;
-
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
     private OwnerRepository ownerRepository;
+
 
     @BeforeEach
     void setUp() {
@@ -87,7 +87,7 @@ class FraudDetectionServiceTest {
         moneyTransferDTO.setAmount(BigDecimal.valueOf(500));
 
         assertThrows(ResponseStatusException.class, () -> {
-            fraudDetectionService.checkMoneyTransferV2(account, moneyTransferDTO);
+            service.checkMoneyTransferV2(account, moneyTransferDTO);
         });
         assertEquals(Status.FROZEN, ((WithStatus)account).getStatus());
     }
@@ -106,7 +106,7 @@ class FraudDetectionServiceTest {
         transactionRepository.saveAll(List.of(transactionA, transactionB));
 
         assertThrows(ResponseStatusException.class, () -> {
-            fraudDetectionService.checkMoneyTransferV2(account, moneyTransferDTO);
+            service.checkMoneyTransferV2(account, moneyTransferDTO);
         });
         assertEquals(Status.FROZEN, ((WithStatus)account).getStatus());
     }

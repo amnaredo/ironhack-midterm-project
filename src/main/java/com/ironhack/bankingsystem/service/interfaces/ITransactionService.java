@@ -10,5 +10,4 @@ public interface ITransactionService {
     List<Transaction> getTransactions();
     List<Transaction> getTransactionsByAccount(CustomUserDetails userDetails, Long idAccount);
     Transaction addTransaction(Transaction transaction);
-    void deleteAll();
 }

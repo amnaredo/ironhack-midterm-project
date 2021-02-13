@@ -237,8 +237,4 @@ public class AccountService implements IAccountService {
     public Account saveAccount(Account account) {
         return accountRepository.saveAndFlush(account);
     }
-
-    public void deleteAll(){
-        accountRepository.deleteAll();
-    }
 }

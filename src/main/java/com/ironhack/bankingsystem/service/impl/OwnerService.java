@@ -125,8 +125,4 @@ public class OwnerService implements IOwnerService {
     private ThirdPartyUser saveThirdPartyUser(ThirdPartyUser thirdPartyUser) {
         return thirdPartyUserRepository.save(thirdPartyUser);
     }
-
-    public void deleteAll() {
-        ownerRepository.deleteAll();
-    }
 }

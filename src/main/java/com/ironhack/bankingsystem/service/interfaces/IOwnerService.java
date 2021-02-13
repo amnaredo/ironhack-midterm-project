@@ -19,6 +19,4 @@ public interface IOwnerService {
 
     AccountHolder addAccountHolder(AccountHolderDTO accountHolderDTO);
     ThirdPartyUser addThirdPartyUser(ThirdPartyUserDTO thirdPartyUserDTO);
-
-    void deleteAll();
 }

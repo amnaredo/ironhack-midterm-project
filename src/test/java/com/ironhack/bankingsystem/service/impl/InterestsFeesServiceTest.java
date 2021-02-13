@@ -6,6 +6,8 @@ import com.ironhack.bankingsystem.model.user.Address;
 import com.ironhack.bankingsystem.model.user.impl.AccountHolder;
 import com.ironhack.bankingsystem.model.user.impl.ThirdPartyUser;
 import com.ironhack.bankingsystem.repository.account.AccountRepository;
+import com.ironhack.bankingsystem.repository.transaction.TransactionRepository;
+import com.ironhack.bankingsystem.repository.user.OwnerRepository;
 import com.ironhack.bankingsystem.service.interfaces.IAccountService;
 import com.ironhack.bankingsystem.service.interfaces.IInterestsFeesService;
 import com.ironhack.bankingsystem.service.interfaces.IOwnerService;
@@ -27,17 +29,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class InterestsFeesServiceTest {
 
     @Autowired
-    private IInterestsFeesService interestsFeesService;
-
-    @Autowired
-    private IAccountService accountService;
-    @Autowired
-    private ITransactionService transactionService;
-    @Autowired
-    private IOwnerService ownerService;
+    private IInterestsFeesService service;
 
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private TransactionRepository transactionRepository;
+    @Autowired
+    private OwnerRepository ownerRepository;
 
 
     @BeforeEach
@@ -50,8 +49,7 @@ class InterestsFeesServiceTest {
 
         ThirdPartyUser thirdPartyUser = new ThirdPartyUser("Google", "elgooG");
 
-        ownerService.addOwner(accountHolder);
-        ownerService.addOwner(thirdPartyUser);
+        ownerRepository.saveAll(List.of(accountHolder, thirdPartyUser));
 
         CheckingAccount checkingAccount = new CheckingAccount(thirdPartyUser, new Money(BigDecimal.valueOf(1000L)), "1234");
         StudentCheckingAccount studentCheckingAccount = new StudentCheckingAccount(accountHolder, new Money(BigDecimal.valueOf(1000L)), "4321");
@@ -66,24 +64,22 @@ class InterestsFeesServiceTest {
         creditCardAccount.setInterestAddedDateTime(oneMonthAgo);
         creditCardAccount.setInterestRate(BigDecimal.valueOf(0.12));
 
-        accountService.addAccount(checkingAccount);
-        accountService.addAccount(studentCheckingAccount);
-        accountService.addAccount(savingsAccount);
-        accountService.addAccount(creditCardAccount);
+        accountRepository.saveAll(List.of(checkingAccount, studentCheckingAccount, savingsAccount, creditCardAccount));
+
     }
 
     @AfterEach
     void tearDown() {
-        transactionService.deleteAll();
-        accountService.deleteAll();
-        ownerService.deleteAll();
+        transactionRepository.deleteAll();
+        accountRepository.deleteAll();
+        ownerRepository.deleteAll();
     }
 
     @Test
     void applyInterestsFeesService() {
-        List<Account> accountList = accountService.getAccounts();
+        List<Account> accountList = accountRepository.findAll();
         for(Account account : accountList) {
-            interestsFeesService.applyInterestsFeesService(account);
+            service.applyInterestsFeesService(account);
         }
 
         CheckingAccount checkingAccount = (CheckingAccount) accountList.get(0);
