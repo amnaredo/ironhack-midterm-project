@@ -2,7 +2,7 @@
 ### Banking System
 
 This project features a banking system backend implementation. 
-It's based in Java, using the Spring Boot lightweight infrastructure with Spring JPA + Hibernate and Spring Security.
+It's based in Java, using the Spring Boot lightweight infrastructure with Spring JPA + Hibernate using MySQL database, and Spring Security.
 
 The API developed here let end users to register new customers, open accounts and associate with them, so it's 
 possible to make money transfers between these accounts, once proved their ownership using basic authentication and authorization.
